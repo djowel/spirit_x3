@@ -117,6 +117,25 @@ main()
     }
 
     {
+        vector<std::string, std::string> attr;
+
+        rule<class ignored, boost::spirit::x3::unused_type> const ignored("ignored");
+        auto const ignored_def = char_('x');
+
+        rule<class rule_with_ignored, vector<std::string, std::string>> rule_with_ignored("rule_with_ignored");
+        auto const rule_with_ignored_def = +(char_ - ':') >> ":" >> *(char_ - 'x') >> ignored;
+
+        auto const unused_merging = boost::spirit::x3::grammar("unused_merging"
+                , rule_with_ignored = rule_with_ignored_def
+                , ignored = ignored_def
+                );
+
+        BOOST_TEST((test_attr("foo:barx", unused_merging, attr, true)));
+        BOOST_TEST((at_c<0>(attr) == "foo"));
+        BOOST_TEST((at_c<1>(attr) == "bar"));
+    }
+
+    {
         // a single element
         char attr;
         BOOST_TEST((test_attr("ab", char_ >> 'b', attr)));
