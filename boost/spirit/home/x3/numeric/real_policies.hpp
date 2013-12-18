@@ -5,8 +5,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
-#if !defined(SPIRIT_REAL_POLICIES_APRIL_17_2006_1158PM)
-#define SPIRIT_REAL_POLICIES_APRIL_17_2006_1158PM
+#if !defined(SPIRIT_X3_REAL_POLICIES_APRIL_17_2006_1158PM)
+#define SPIRIT_X3_REAL_POLICIES_APRIL_17_2006_1158PM
 
 #if defined(_MSC_VER)
 #pragma once
