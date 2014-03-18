@@ -21,6 +21,7 @@ project spirit_x3/test
         <toolset>gcc:<cxxflags>-ftemplate-depth-512
         <toolset>darwin:<cxxflags>-std=c++0x
         <toolset>darwin:<cxxflags>-ftemplate-depth-512
+        <toolset>clang:<cxxflags>-std=c++11
     :
     :
     ;
