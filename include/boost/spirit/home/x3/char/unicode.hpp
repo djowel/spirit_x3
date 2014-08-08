@@ -14,10 +14,66 @@
 #include <boost/spirit/home/x3/char/char_parser.hpp>
 #include <boost/spirit/home/x3/char/char.hpp>
 #include <boost/spirit/home/x3/char/detail/cast_char.hpp>
+#include <boost/spirit/home/x3/string/literal_string.hpp>
 #include <boost/spirit/home/support/char_encoding/unicode.hpp>
 
 namespace boost { namespace spirit { namespace x3
 {
+    namespace unicode
+    {
+        typedef any_char<char_encoding::unicode> char_type;
+        char_type const char_ = char_type();
+    }
+
+    namespace extension
+    {
+        template <>
+        struct as_parser<char32_t>
+        {
+            typedef literal_char<
+                char_encoding::unicode, unused_type>
+            type;
+
+            typedef type value_type;
+
+            static type call(char32_t ch)
+            {
+                return type(ch);
+            }
+        };
+
+        template <int N>
+        struct as_parser<char32_t[N]>
+        {
+            typedef
+                literal_string<
+                    char32_t const*, char_encoding::unicode, unused_type>
+            type;
+
+            typedef type value_type;
+
+            static type call(char32_t const* s)
+            {
+                return type(s);
+            }
+        };
+
+        template <int N>
+        struct as_parser<char32_t const[N]> : as_parser<char32_t[N]> {};
+    }
+
+    inline literal_char<char_encoding::unicode, unused_type>
+    lit(char32_t ch)
+    {
+        return literal_char<char_encoding::unicode, unused_type>(ch);
+    }
+
+    inline literal_string<char32_t const*, char_encoding::unicode, unused_type>
+    lit(char32_t const* s)
+    {
+        return literal_string<char32_t const*, char_encoding::unicode, unused_type>(s);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     //  Unicode Major Categories
     ///////////////////////////////////////////////////////////////////////////
@@ -430,9 +486,6 @@ namespace boost { namespace spirit { namespace x3
 
     namespace unicode
     {
-        typedef any_char<char_encoding::unicode> char_type;
-        char_type const char_ = char_type();
-
     ///////////////////////////////////////////////////////////////////////////
     //  Unicode Major Categories
     ///////////////////////////////////////////////////////////////////////////

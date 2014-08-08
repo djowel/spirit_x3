@@ -684,9 +684,10 @@ namespace boost { namespace spirit { namespace char_encoding
                 iso8859_1_char_conversion[ch] : ch;
         }
 
-        static ::boost::uint32_t
+        static char32_t
         toucs4(int ch)
         {
+            BOOST_ASSERT(0 == (ch & ~UCHAR_MAX));
             // The first 256 characters in Unicode and the UCS are
             // identical to those in ISO/IEC-8859-1.
             return ch;

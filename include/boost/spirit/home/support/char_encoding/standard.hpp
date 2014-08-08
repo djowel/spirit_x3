@@ -126,10 +126,10 @@ namespace boost { namespace spirit { namespace char_encoding
             return std::toupper(ch);
         }
 
-        static ::boost::uint32_t
+        static char32_t
         toucs4(int ch)
         {
-            return ch;
+            return (unsigned char)ch;
         }
     };
 }}}

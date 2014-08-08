@@ -174,10 +174,10 @@ namespace boost { namespace spirit { namespace char_encoding
                 to_char_type<wchar_t>(towupper(to_int_type(ch))) : ch;
         }
 
-        static ::boost::uint32_t
-        toucs4(int ch)
+        static char32_t
+        toucs4(wchar_t ch)
         {
-            return ch;
+            return (unsigned wchar_t)ch; // in case wchar_t is 16 bits
         }
     };
 }}}

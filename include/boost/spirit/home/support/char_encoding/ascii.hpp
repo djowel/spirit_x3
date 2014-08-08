@@ -288,9 +288,10 @@ namespace boost { namespace spirit { namespace char_encoding
             return islower(ch) ? (ch - 'a' + 'A') : ch;
         }
 
-        static ::boost::uint32_t
+        static char32_t
         toucs4(int ch)
         {
+            BOOST_ASSERT(isascii_(ch));
             return ch;
         }
     };
