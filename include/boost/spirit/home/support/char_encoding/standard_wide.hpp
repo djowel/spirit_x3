@@ -68,84 +68,73 @@ namespace boost { namespace spirit { namespace char_encoding
                     std::size_t(ch & ~traits::wchar_t_size<sizeof(wchar_t)>::mask) || 
                 std::size_t(~0) == 
                     std::size_t(ch | traits::wchar_t_size<sizeof(wchar_t)>::mask)
-            ) ? true : false;     // any wchar_t, but no other bits set
+            ); // any wchar_t, but no other bits set
         }
 
         static bool
         isalnum(wchar_t ch)
         {
-            using namespace std;
-            return iswalnum(to_int_type(ch)) ? true : false;
+            return std::iswalnum(to_int_type(ch));
         }
 
         static bool
         isalpha(wchar_t ch)
         {
-            using namespace std;
-            return iswalpha(to_int_type(ch)) ? true : false;
+            return std::iswalpha(to_int_type(ch));
         }
 
         static bool
         iscntrl(wchar_t ch)
         {
-            using namespace std;
-            return iswcntrl(to_int_type(ch)) ? true : false;
+            return std::iswcntrl(to_int_type(ch));
         }
 
         static bool
         isdigit(wchar_t ch)
         {
-            using namespace std;
-            return iswdigit(to_int_type(ch)) ? true : false;
+            return std::iswdigit(to_int_type(ch));
         }
 
         static bool
         isgraph(wchar_t ch)
         {
-            using namespace std;
-            return iswgraph(to_int_type(ch)) ? true : false;
+            return std::iswgraph(to_int_type(ch));
         }
 
         static bool
         islower(wchar_t ch)
         {
-            using namespace std;
-            return iswlower(to_int_type(ch)) ? true : false;
+            return std::iswlower(to_int_type(ch));
         }
 
         static bool
         isprint(wchar_t ch)
         {
-            using namespace std;
-            return iswprint(to_int_type(ch)) ? true : false;
+            return std::iswprint(to_int_type(ch));
         }
 
         static bool
         ispunct(wchar_t ch)
         {
-            using namespace std;
-            return iswpunct(to_int_type(ch)) ? true : false;
+            return std::iswpunct(to_int_type(ch));
         }
 
         static bool
         isspace(wchar_t ch)
         {
-            using namespace std;
-            return iswspace(to_int_type(ch)) ? true : false;
+            return std::iswspace(to_int_type(ch));
         }
 
         static bool
         isupper(wchar_t ch)
         {
-            using namespace std;
-            return iswupper(to_int_type(ch)) ? true : false;
+            return std::iswupper(to_int_type(ch));
         }
 
         static bool
         isxdigit(wchar_t ch)
         {
-            using namespace std;
-            return iswxdigit(to_int_type(ch)) ? true : false;
+            return std::iswxdigit(to_int_type(ch));
         }
 
         static bool
@@ -161,16 +150,14 @@ namespace boost { namespace spirit { namespace char_encoding
         static wchar_t
         tolower(wchar_t ch)
         {
-            using namespace std;
-            return isupper(ch) ?
+            return std::isupper(ch) ?
                 to_char_type<wchar_t>(towlower(to_int_type(ch))) : ch;
         }
 
         static wchar_t
         toupper(wchar_t ch)
         {
-            using namespace std;
-            return islower(ch) ?
+            return std::islower(ch) ?
                 to_char_type<wchar_t>(towupper(to_int_type(ch))) : ch;
         }
 
