@@ -34,6 +34,12 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
     template <>
     struct is_char<wchar_t> : mpl::true_ {};
 
+    template <>
+    struct is_char<char16_t> : mpl::true_ {};
+
+    template <>
+    struct is_char<char32_t> : mpl::true_ {};
+
     ///////////////////////////////////////////////////////////////////////////
     // Determine if T is a string
     ///////////////////////////////////////////////////////////////////////////
@@ -41,43 +47,25 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
     struct is_string : mpl::false_ {};
 
     template <typename T>
-    struct is_string<T const> : is_string<T> {};
+    struct is_string<T const> : is_char<T> {};
 
-    template <>
-    struct is_string<char const*> : mpl::true_ {};
+    template <typename T>
+    struct is_string<T*> : is_char<T> {};
 
-    template <>
-    struct is_string<wchar_t const*> : mpl::true_ {};
+    template <typename T>
+    struct is_string<T const*> : is_char<T> {};
 
-    template <>
-    struct is_string<char*> : mpl::true_ {};
+    template <typename T, std::size_t N>
+    struct is_string<T[N]> : is_char<T> {};
 
-    template <>
-    struct is_string<wchar_t*> : mpl::true_ {};
+    template <typename T, std::size_t N>
+    struct is_string<T const[N]> : is_char<T> {};
 
-    template <std::size_t N>
-    struct is_string<char[N]> : mpl::true_ {};
+    template <typename T, std::size_t N>
+    struct is_string<T(&)[N]> : is_char<T> {};
 
-    template <std::size_t N>
-    struct is_string<wchar_t[N]> : mpl::true_ {};
-
-    template <std::size_t N>
-    struct is_string<char const[N]> : mpl::true_ {};
-
-    template <std::size_t N>
-    struct is_string<wchar_t const[N]> : mpl::true_ {};
-
-    template <std::size_t N>
-    struct is_string<char(&)[N]> : mpl::true_ {};
-
-    template <std::size_t N>
-    struct is_string<wchar_t(&)[N]> : mpl::true_ {};
-
-    template <std::size_t N>
-    struct is_string<char const(&)[N]> : mpl::true_ {};
-
-    template <std::size_t N>
-    struct is_string<wchar_t const(&)[N]> : mpl::true_ {};
+    template <typename T, std::size_t N>
+    struct is_string<T const(&)[N]> : is_char<T> {};
 
     template <typename T, typename Traits, typename Allocator>
     struct is_string<std::basic_string<T, Traits, Allocator> > : mpl::true_ {};
@@ -98,40 +86,28 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
     struct char_type_of<wchar_t> : mpl::identity<wchar_t> {};
 
     template <>
-    struct char_type_of<char const*> : mpl::identity<char const> {};
+    struct char_type_of<char16_t> : mpl::identity<char16_t> {};
 
     template <>
-    struct char_type_of<wchar_t const*> : mpl::identity<wchar_t const> {};
+    struct char_type_of<char32_t> : mpl::identity<char32_t> {};
 
-    template <>
-    struct char_type_of<char*> : mpl::identity<char> {};
+    template <typename T>
+    struct char_type_of<T*> : mpl::identity<typename char_type_of<T>::type> {};
 
-    template <>
-    struct char_type_of<wchar_t*> : mpl::identity<wchar_t> {};
+    template <typename T>
+    struct char_type_of<T const*> : mpl::identity<typename char_type_of<T>::type const> {};
 
-    template <std::size_t N>
-    struct char_type_of<char[N]> : mpl::identity<char> {};
+    template <typename T, std::size_t N>
+    struct char_type_of<T[N]> : mpl::identity<typename char_type_of<T>::type> {};
 
-    template <std::size_t N>
-    struct char_type_of<wchar_t[N]> : mpl::identity<wchar_t> {};
+    template <typename T, std::size_t N>
+    struct char_type_of<T const[N]> : mpl::identity<typename char_type_of<T>::type> {};
 
-    template <std::size_t N>
-    struct char_type_of<char const[N]> : mpl::identity<char const> {};
+    template <typename T, std::size_t N>
+    struct char_type_of<T(&)[N]> : mpl::identity<typename char_type_of<T>::type> {};
 
-    template <std::size_t N>
-    struct char_type_of<wchar_t const[N]> : mpl::identity<wchar_t const> {};
-
-    template <std::size_t N>
-    struct char_type_of<char(&)[N]> : mpl::identity<char> {};
-
-    template <std::size_t N>
-    struct char_type_of<wchar_t(&)[N]> : mpl::identity<wchar_t> {};
-
-    template <std::size_t N>
-    struct char_type_of<char const(&)[N]> : mpl::identity<char const> {};
-
-    template <std::size_t N>
-    struct char_type_of<wchar_t const(&)[N]> : mpl::identity<wchar_t const> {};
+    template <typename T, std::size_t N>
+    struct char_type_of<T const(&)[N]> : mpl::identity<typename char_type_of<T>::type> {};
 
     template <typename T, typename Traits, typename Allocator>
     struct char_type_of<std::basic_string<T, Traits, Allocator> >

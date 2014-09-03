@@ -89,7 +89,7 @@ namespace
     }
 }
 
-template <typename Lookup, typename WideLookup>
+template <typename Lookup, typename WideLookup, typename UnicodeLookup>
 void tests()
 {
     { // basic tests
@@ -198,6 +198,38 @@ void tests()
         docheck(lookup, L"bananaramaz", true, 6, 3);
         docheck(lookup, L"appletz", true, 5, 5);
         docheck(lookup, L"applepix", true, 5, 5);
+    }
+
+    { // utf32 tests
+        UnicodeLookup lookup;
+        add(lookup, U"pineapple", 1);
+        add(lookup, U"orange", 2);
+        add(lookup, U"banana", 3);
+        add(lookup, U"applepie", 4);
+        add(lookup, U"apple", 5);
+
+        docheck(lookup, U"pineapple", true, 9, 1);
+        docheck(lookup, U"orange", true, 6, 2);
+        docheck(lookup, U"banana", true, 6, 3);
+        docheck(lookup, U"apple", true, 5, 5);
+        docheck(lookup, U"pizza", false);
+        docheck(lookup, U"steak", false);
+        docheck(lookup, U"applepie", true, 8, 4);
+        docheck(lookup, U"bananarama", true, 6, 3);
+        docheck(lookup, U"applet", true, 5, 5);
+        docheck(lookup, U"applepi", true, 5, 5);
+        docheck(lookup, U"appl", false);
+
+        docheck(lookup, U"pineapplez", true, 9, 1);
+        docheck(lookup, U"orangez", true, 6, 2);
+        docheck(lookup, U"bananaz", true, 6, 3);
+        docheck(lookup, U"applez", true, 5, 5);
+        docheck(lookup, U"pizzaz", false);
+        docheck(lookup, U"steakz", false);
+        docheck(lookup, U"applepiez", true, 8, 4);
+        docheck(lookup, U"bananaramaz", true, 6, 3);
+        docheck(lookup, U"appletz", true, 5, 5);
+        docheck(lookup, U"applepix", true, 5, 5);
     }
 
     { // test remove
@@ -346,8 +378,8 @@ int main()
     using boost::spirit::x3::tst;
     using boost::spirit::x3::tst_map;
 
-    tests<tst<char, int>, tst<wchar_t, int> >();
-    tests<tst_map<char, int>, tst_map<wchar_t, int> >();
+    tests<tst<char, int>, tst<wchar_t, int>, tst<char32_t, int>>();
+    tests<tst_map<char, int>, tst_map<wchar_t, int>, tst_map<char32_t, int>>();
 
     return boost::report_errors();
 }

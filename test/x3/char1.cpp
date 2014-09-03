@@ -6,6 +6,8 @@
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
 #include <boost/detail/lightweight_test.hpp>
+
+#define BOOST_SPIRIT_X3_UNICODE 1
 #include <boost/spirit/home/x3.hpp>
 
 #include <iostream>
@@ -23,6 +25,7 @@ main()
 
         BOOST_TEST(test("x", 'x'));
         BOOST_TEST(test(L"x", L'x'));
+        BOOST_TEST(test(U"x", U'x'));
         BOOST_TEST(!test("y", 'x'));
         BOOST_TEST(!test(L"y", L'x'));
 
@@ -54,6 +57,7 @@ main()
 
         BOOST_TEST(test("   x", 'x', space));
         BOOST_TEST(test(L"   x", L'x', space));
+        BOOST_TEST(test(U"   x", U'x', space));
 
         BOOST_TEST(test("   x", char_, space));
         BOOST_TEST(test("   x", char_('x'), space));
@@ -86,6 +90,33 @@ main()
         //~ BOOST_TEST(test(L"x", ~~char_(L'b', L'y')));
         //~ BOOST_TEST(!test(L"a", ~~char_(L'b', L'y')));
         //~ BOOST_TEST(!test(L"z", ~~char_(L'b', L'y')));
+    }
+
+
+    {
+        using namespace boost::spirit::x3::unicode;
+
+        BOOST_TEST(test(U"x", char_));
+        BOOST_TEST(test(U"x", char_(U'x')));
+        BOOST_TEST(!test(U"x", char_(U'y')));
+        //~ BOOST_TEST(test(U"x", char_(U'a', U'z')));
+        //~ BOOST_TEST(!test(U"x", char_(U'0', U'9')));
+
+        BOOST_TEST(!test(U"x", ~char_));
+        BOOST_TEST(!test(U"x", ~char_(U'x')));
+        BOOST_TEST(test(U" ", ~char_(U'x')));
+        BOOST_TEST(test(U"X", ~char_(U'x')));
+        //~ BOOST_TEST(!test(U"x", ~char_(U'b', U'y')));
+        //~ BOOST_TEST(test(U"a", ~char_(U'b', U'y')));
+        //~ BOOST_TEST(test(U"z", ~char_(U'b', U'y')));
+
+        BOOST_TEST(test(U"x", ~~char_));
+        BOOST_TEST(test(U"x", ~~char_(U'x')));
+        BOOST_TEST(!test(U" ", ~~char_(U'x')));
+        BOOST_TEST(!test(U"X", ~~char_(U'x')));
+        //~ BOOST_TEST(test(U"x", ~~char_(U'b', U'y')));
+        //~ BOOST_TEST(!test(U"a", ~~char_(U'b', U'y')));
+        //~ BOOST_TEST(!test(U"z", ~~char_(U'b', U'y')));
     }
 
 

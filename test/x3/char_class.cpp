@@ -109,9 +109,10 @@ main()
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
 #pragma setlocale("german")
 #endif
-        BOOST_TEST(test("é", alpha));
-        BOOST_TEST(test("é", lower));
-        BOOST_TEST(!test("é", upper));
+        const char e_acute[] = "\xE9"; // Latin-1 e with acute accent
+        BOOST_TEST(test(e_acute, alpha));
+        BOOST_TEST(test(e_acute, lower));
+        BOOST_TEST(!test(e_acute, upper));
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
 #pragma setlocale("")
 #endif
@@ -171,43 +172,44 @@ main()
 
     {
         using namespace boost::spirit::x3::unicode;
-        BOOST_TEST(test(L"1", alnum));
-        BOOST_TEST(!test(L" ", alnum));
-        BOOST_TEST(!test(L"1", alpha));
-        BOOST_TEST(test(L"x", alpha));
-        BOOST_TEST(test(L" ", blank));
-        BOOST_TEST(!test(L"x", blank));
-        BOOST_TEST(test(L"1", digit));
-        BOOST_TEST(!test(L"x", digit));
-        BOOST_TEST(test(L"a", lower));
-        BOOST_TEST(!test(L"A", lower));
-        BOOST_TEST(test(L"!", punct));
-        BOOST_TEST(!test(L"x", punct));
-        BOOST_TEST(test(L" ", space));
-        BOOST_TEST(test(L"\n", space));
-        BOOST_TEST(test(L"\r", space));
-        BOOST_TEST(test(L"\t", space));
-        BOOST_TEST(test(L"A", upper));
-        BOOST_TEST(!test(L"a", upper));
-        BOOST_TEST(test(L"A", xdigit));
-        BOOST_TEST(test(L"0", xdigit));
-        BOOST_TEST(test(L"f", xdigit));
-        BOOST_TEST(!test(L"g", xdigit));
+        BOOST_TEST(test(U"1", alnum));
+        BOOST_TEST(!test(U" ", alnum));
+        BOOST_TEST(!test(U"1", alpha));
+        BOOST_TEST(test(U"x", alpha));
+        BOOST_TEST(test(U" ", blank));
+        BOOST_TEST(!test(U"x", blank));
+        BOOST_TEST(test(U"1", digit));
+        BOOST_TEST(!test(U"x", digit));
+        BOOST_TEST(test(U"a", lower));
+        BOOST_TEST(!test(U"A", lower));
+        BOOST_TEST(test(U"!", punct));
+        BOOST_TEST(!test(U"x", punct));
+        BOOST_TEST(test(U" ", space));
+        BOOST_TEST(test(U"\n", space));
+        BOOST_TEST(test(U"\r", space));
+        BOOST_TEST(test(U"\t", space));
+        BOOST_TEST(test(U"A", upper));
+        BOOST_TEST(!test(U"a", upper));
+        BOOST_TEST(test(U"A", xdigit));
+        BOOST_TEST(test(U"0", xdigit));
+        BOOST_TEST(test(U"f", xdigit));
+        BOOST_TEST(!test(U"g", xdigit));
 
-        BOOST_TEST(test(L"A", alphabetic));
-        BOOST_TEST(test(L"9", decimal_number));
-        BOOST_TEST(test(L"\u2800", braille));
-        BOOST_TEST(!test(L" ", braille));
-        BOOST_TEST(test(L" ", ~braille));
+        BOOST_TEST(test(U"A", alphabetic));
+        BOOST_TEST(test(U"9", decimal_number));
+        BOOST_TEST(test(U"\u2800", braille));
+        BOOST_TEST(!test(U" ", braille));
+        BOOST_TEST(test(U" ", ~braille));
         // $$$ TODO $$$ Add more unicode tests
 
 // needed for VC7.1 only
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
 #pragma setlocale("german")
 #endif
-        BOOST_TEST(test("é", alpha));
-        BOOST_TEST(test("é", lower));
-        BOOST_TEST(!test("é", upper));
+        const char32_t e_acute[] = U"\xE9"; // Latin-1 e with acute accent
+        BOOST_TEST(test(e_acute, alpha));
+        BOOST_TEST(test(e_acute, lower));
+        BOOST_TEST(!test(e_acute, upper));
 
 #if BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
 #pragma setlocale("")

@@ -73,7 +73,7 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
     {
         // for plain data types
         template <typename T_>
-        static void call(Out& out, T_ const& val, unused_attribute)
+        static void call(Out& out, T_ const&, unused_attribute)
         {
             out << "unused";
         }

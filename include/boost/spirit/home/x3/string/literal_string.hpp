@@ -61,6 +61,15 @@ namespace boost { namespace spirit { namespace x3
     }
     using standard::string;
 
+    namespace standard_wide
+    {
+        inline literal_string<wchar_t const*, char_encoding::standard_wide>
+        string(wchar_t const* s)
+        {
+            return literal_string<wchar_t const*, char_encoding::standard_wide>(s);
+        }
+    }
+
     namespace extension
     {
         template <int N>
@@ -102,13 +111,18 @@ namespace boost { namespace spirit { namespace x3
         struct as_parser<wchar_t const[N]> : as_parser<wchar_t[N]> {};
     }
 
-    using standard::string;
-
     inline literal_string<char const*, char_encoding::standard, unused_type>
     lit(char const* s)
     {
         return literal_string<char const*, char_encoding::standard, unused_type>(s);
     }
+
+    inline literal_string<wchar_t const*, char_encoding::standard_wide, unused_type>
+    lit(wchar_t const* s)
+    {
+        return literal_string<wchar_t const*, char_encoding::standard_wide, unused_type>(s);
+    }
+
 
     template <typename String, typename Encoding, typename Attribute>
     struct get_info<literal_string<String, Encoding, Attribute>>

@@ -32,7 +32,7 @@ namespace boost { namespace spirit { namespace x3
       , typename Context, typename ActualAttribute>
     inline detail::default_parse_rule_result
     parse_rule(
-        rule<ID, Attribute> rule_
+        rule<ID, Attribute>
       , Iterator& first, Iterator const& last
       , Context const& context, ActualAttribute& attr)
     {

@@ -35,67 +35,67 @@ namespace boost { namespace spirit { namespace char_encoding
         {
             // uses all 8 bits
             // we have to watch out for sign extensions
-            return (0 == (ch & ~0xff) || ~0 == (ch | 0xff)) ? true : false;
+            return (0 == (ch & ~0xff) || ~0 == (ch | 0xff));
         }
 
         static bool
         isalnum(int ch)
         {
-            return std::isalnum(ch) ? true : false;
+            return std::isalnum((unsigned char)ch);
         }
 
         static bool
         isalpha(int ch)
         {
-            return std::isalpha(ch) ? true : false;
+            return std::isalpha((unsigned char)ch);
         }
 
         static bool
         isdigit(int ch)
         {
-            return std::isdigit(ch) ? true : false;
+            return std::isdigit((unsigned char)ch);
         }
 
         static bool
         isxdigit(int ch)
         {
-            return std::isxdigit(ch) ? true : false;
+            return std::isxdigit((unsigned char)ch);
         }
 
         static bool
         iscntrl(int ch)
         {
-            return std::iscntrl(ch) ? true : false;
+            return std::iscntrl((unsigned char)ch);
         }
 
         static bool
         isgraph(int ch)
         {
-            return std::isgraph(ch) ? true : false;
+            return std::isgraph((unsigned char)ch);
         }
 
         static bool
         islower(int ch)
         {
-            return std::islower(ch) ? true : false;
+            return std::islower((unsigned char)ch);
         }
 
         static bool
         isprint(int ch)
         {
-            return std::isprint(ch) ? true : false;
+            return std::isprint((unsigned char)ch);
         }
 
         static bool
         ispunct(int ch)
         {
-            return std::ispunct(ch) ? true : false;
+            return std::ispunct((unsigned char)ch);
         }
 
         static bool
         isspace(int ch)
         {
-            return std::isspace(ch) ? true : false;
+            return std::isspace((unsigned char)ch);
         }
 
         static bool
@@ -107,7 +107,7 @@ namespace boost { namespace spirit { namespace char_encoding
         static bool
         isupper(int ch)
         {
-            return std::isupper(ch) ? true : false;
+            return std::isupper((unsigned char)ch);
         }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -117,19 +117,19 @@ namespace boost { namespace spirit { namespace char_encoding
         static int
         tolower(int ch)
         {
-            return std::tolower(ch);
+            return std::tolower((unsigned char)ch);
         }
 
         static int
         toupper(int ch)
         {
-            return std::toupper(ch);
+            return std::toupper((unsigned char)ch);
         }
 
-        static ::boost::uint32_t
+        static char32_t
         toucs4(int ch)
         {
-            return ch;
+            return (unsigned char)ch;
         }
     };
 }}}

@@ -22,7 +22,7 @@ namespace boost { namespace spirit { namespace char_encoding
     ///////////////////////////////////////////////////////////////////////////
     struct unicode
     {
-        typedef ::boost::uint32_t char_type;
+        typedef char32_t char_type;
 
     ///////////////////////////////////////////////////////////////////////////
     //  Posix stuff
@@ -34,10 +34,11 @@ namespace boost { namespace spirit { namespace char_encoding
         }
 
         static bool
-        ischar(char_type ch)
+        ischar(char_type)
         {
-            // unicode code points in the range 0x00 to 0x10FFFF
-            return ch <= 0x10FFFF;
+            // this function only checks to see if the given value can be represented, not if it's legal.
+            // unless you're planning to store code points in an array of 64-bit integers, it's all good.
+            return true;
         }
 
         static bool
@@ -128,7 +129,7 @@ namespace boost { namespace spirit { namespace char_encoding
             return ucd::to_uppercase(ch);
         }
 
-        static ::boost::uint32_t
+        static char32_t
         toucs4(char_type ch)
         {
             return ch;

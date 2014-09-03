@@ -11,6 +11,12 @@
 #pragma once
 #endif
 
+#ifdef __GNUC__
+#define BOOST_SPIRIT_X3_UNUSED __attribute__((unused))
+#else
+#define BOOST_SPIRIT_X3_UNUSED
+#endif
+
 //~ #include <boost/spirit/home/x3/action.hpp>
 //~ #include <boost/spirit/home/x3/auto.hpp>
 #include <boost/spirit/home/x3/auxiliary.hpp>
