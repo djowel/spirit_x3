@@ -62,12 +62,11 @@ namespace boost { namespace spirit { namespace char_encoding
         {
             // we have to watch out for sign extensions (casting is there to 
             // silence certain compilers complaining about signed/unsigned
-            // mismatch)
+            // mismatch); if unsigned int is not big enough then the entire API
+            // needs to stop using 'int' as a generic char-holding parameter
             return (
-                std::size_t(0) == 
-                    std::size_t(ch & ~traits::wchar_t_size<sizeof(wchar_t)>::mask) || 
-                std::size_t(~0) == 
-                    std::size_t(ch | traits::wchar_t_size<sizeof(wchar_t)>::mask)
+                 0u == unsigned(ch & ~traits::wchar_t_size<sizeof(wchar_t)>::mask) ||
+                ~0u == unsigned(ch |  traits::wchar_t_size<sizeof(wchar_t)>::mask)
             ); // any wchar_t, but no other bits set
         }
 
