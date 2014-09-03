@@ -164,7 +164,7 @@ namespace boost { namespace spirit { namespace char_encoding
         static char32_t
         toucs4(wchar_t ch)
         {
-            return (unsigned wchar_t)ch; // in case wchar_t is 16 bits
+            return ch & traits::wchar_t_size<sizeof(wchar_t)>::mask;
         }
     };
 }}}
