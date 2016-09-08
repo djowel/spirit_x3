@@ -27,5 +27,9 @@ namespace x3 {
             }
             return false;
         }
+
+        // Range contains bool() saying if it is empty, and does skippy stuff inside.
+        //maybe<T> check(Range &r) const {return r ? *(r++) : {};}
+        //auto parse(T &&c) const {return std::move(c);}
     };
 }

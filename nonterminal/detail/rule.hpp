@@ -52,6 +52,7 @@ namespace x3 {
     template <typename ID, typename Attribute, class I, class C, class A, std::enable_if_t<has_custom_definition<ID>::value, int> = 0>
     bool parse_rule(rule<ID, Attribute> rule, I& first, I const &last , C const &context, A &attr) {
         static auto const def = (rule = decltype(get_define_t((ID *) nullptr))::template definition<>);
+        static_assert(std::pair<Attribute, A>::aaa, "");
         return def.parse(first, last, context, unused, attr);
     }
 

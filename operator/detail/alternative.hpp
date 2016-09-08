@@ -27,94 +27,51 @@
 
 #include <boost/type_traits/is_same.hpp>
 
-namespace x3
-{
+namespace x3 {
     template <typename Left, typename Right>
     struct alternative;
-}}}
+}
 
-namespace x3 { namespace detail
-{
-    struct pass_variant_unused
-    {
+namespace x3 { namespace detail {
+    struct pass_variant_unused {
         typedef unused_type type;
 
         template <typename T>
-        static unused_type
-        call(T&)
-        {
-            return unused_type();
-        }
+        static unused_type call(T&) {return unused_type(); }
     };
 
     template <typename Attribute>
-    struct pass_variant_used
-    {
+    struct pass_variant_used {
         typedef Attribute& type;
 
-        static Attribute&
-        call(Attribute& v)
-        {
-            return v;
-        }
+        static Attribute& call(Attribute& v) {return v; }
     };
 
     template <>
     struct pass_variant_used<unused_type> : pass_variant_unused {};
 
-    template <typename Parser, typename Attribute, typename Context
-      , typename Enable = void>
-    struct pass_parser_attribute
-    {
-        typedef typename
-            traits::attribute_of<Parser, Context>::type
-        attribute_type;
-        typedef typename
-            traits::variant_find_substitute<Attribute, attribute_type>::type
-        substitute_type;
+    template <typename Parser, typename Attribute, typename Context , typename Enable = void>
+    struct pass_parser_attribute {
+        typedef typename traits::attribute_of<Parser, Context>::type attribute_type;
+        typedef typename traits::variant_find_substitute<Attribute, attribute_type>::type substitute_type;
 
-        typedef typename
-            mpl::if_<
-                is_same<Attribute, substitute_type>
-              , Attribute&
-              , substitute_type
-            >::type
-        type;
+        typedef typename mpl::if_< is_same<Attribute, substitute_type> , Attribute& , substitute_type >::type type;
 
-        template <typename Attribute_>
-        static Attribute_&
-        call(Attribute_& attr, mpl::true_)
-        {
-            return attr;
-        }
+        template <typename Attribute_> static Attribute_& call(Attribute_& attr, mpl::true_) {return attr; }
 
-        template <typename Attribute_>
-        static type
-        call(Attribute_&, mpl::false_)
-        {
-            return type();
-        }
+        template <typename Attribute_> static type call(Attribute_&, mpl::false_) {return type(); }
 
-        template <typename Attribute_>
-        static type
-        call(Attribute_& attr)
-        {
+        template <typename Attribute_> static type call(Attribute_& attr) {
             return call(attr, is_same<Attribute_, typename remove_reference<type>::type>());
         }
     };
 
     // Pass non-variant attributes as-is
-    template <typename Parser, typename Attribute, typename Context
-      , typename Enable = void>
-    struct pass_non_variant_attribute
-    {
+    template <typename Parser, typename Attribute, typename Context , typename Enable = void>
+    struct pass_non_variant_attribute {
         typedef Attribute& type;
 
-        static Attribute&
-        call(Attribute& attr)
-        {
-            return attr;
-        }
+        static Attribute& call(Attribute& attr) {return attr; }
     };
 
     // Unwrap single element sequences
