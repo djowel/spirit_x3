@@ -9,11 +9,11 @@
 #if !defined(BOOST_SPIRIT_X3_OPTIONAL_TRAITS_FEBRUARY_06_2007_1001AM)
 #define BOOST_SPIRIT_X3_OPTIONAL_TRAITS_FEBRUARY_06_2007_1001AM
 
-#include <boost/spirit/home/x3/support/unused.hpp>
+#include <x3/support/unused.hpp>
 #include <boost/optional/optional.hpp>
 #include <boost/mpl/identity.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     template <typename T, typename Enable = void>

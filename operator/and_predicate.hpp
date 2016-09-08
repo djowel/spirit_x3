@@ -7,9 +7,9 @@
 #if !defined(SPIRIT_AND_PREDICATE_MARCH_23_2007_0617PM)
 #define SPIRIT_AND_PREDICATE_MARCH_23_2007_0617PM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
+#include <x3/core/parser.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Subject>
     struct and_predicate : unary_parser<Subject, and_predicate<Subject>>

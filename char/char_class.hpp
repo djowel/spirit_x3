@@ -4,34 +4,24 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CHAR_CLASS_APRIL_16_2006_1051AM)
-#define BOOST_SPIRIT_X3_CHAR_CLASS_APRIL_16_2006_1051AM
+#pragma once
 
-#include <boost/spirit/home/x3/char/char_parser.hpp>
-#include <boost/spirit/home/x3/char/detail/cast_char.hpp>
-#include <boost/spirit/home/support/char_encoding/standard.hpp>
-#include <boost/spirit/home/support/char_encoding/standard_wide.hpp>
-#include <boost/spirit/home/support/char_encoding/ascii.hpp>
-#include <boost/spirit/home/support/char_encoding/iso8859_1.hpp>
-#include <boost/spirit/home/x3/char/char_class_tags.hpp>
-namespace boost { namespace spirit { namespace x3
-{
+#include <x3/char/char_parser.hpp>
+#include <x3/char/detail/cast_char.hpp>
+#include <support/char_encoding/standard.hpp>
+#include <support/char_encoding/standard_wide.hpp>
+#include <support/char_encoding/ascii.hpp>
+#include <support/char_encoding/iso8859_1.hpp>
+#include <x3/char/char_class_tags.hpp>
+
+namespace x3 {
     ///////////////////////////////////////////////////////////////////////////
     template <typename Encoding>
-    struct char_class_base
-    {
+    struct char_class_base {
         typedef typename Encoding::char_type char_type;
 
-#define BOOST_SPIRIT_X3_CLASSIFY(name)                                             \
-        template <typename Char>                                                \
-        static bool                                                             \
-        is(name##_tag, Char ch)                                                 \
-        {                                                                       \
-            return Encoding::is##name                                           \
-                BOOST_PREVENT_MACRO_SUBSTITUTION                                \
-                    (detail::cast_char<char_type>(ch));                         \
-        }                                                                       \
-        /***/
+#define BOOST_SPIRIT_X3_CLASSIFY(name) template <typename Char> \
+        static bool is(name##_tag, Char ch) {return Encoding::is##name BOOST_PREVENT_MACRO_SUBSTITUTION(detail::cast_char<char_type>(ch));}                                                                       \ /***/
 
         BOOST_SPIRIT_X3_CLASSIFY(char)
         BOOST_SPIRIT_X3_CLASSIFY(alnum)
@@ -51,9 +41,7 @@ namespace boost { namespace spirit { namespace x3
     };
 
     template <typename Encoding, typename Tag>
-    struct char_class
-      : char_parser<char_class<Encoding, Tag>>
-    {
+    struct char_class : char_parser<char_class<Encoding, Tag>> {
         typedef Encoding encoding;
         typedef Tag tag;
         typedef typename Encoding::char_type char_type;
@@ -61,11 +49,9 @@ namespace boost { namespace spirit { namespace x3
         static bool const has_attribute = true;
 
         template <typename Char, typename Context>
-        bool test(Char ch, Context const& context) const
-        {
+        bool test(Char ch, Context const& context) const {
             return ((sizeof(Char) <= sizeof(char_type)) || encoding::ischar(ch))
-                && char_class_base<Encoding>::is(
-                    get_case_compare<Encoding>(context).get_char_class_tag(tag()), ch);
+                && char_class_base<Encoding>::is(get_case_compare<Encoding>(context).get_char_class_tag(tag()), ch);
         }
     };
 
@@ -75,8 +61,7 @@ namespace boost { namespace spirit { namespace x3
     /***/
 
 #define BOOST_SPIRIT_X3_CHAR_CLASSES(encoding)                                     \
-    namespace encoding                                                          \
-    {                                                                           \
+    namespace encoding {                                                                           \
         BOOST_SPIRIT_X3_CHAR_CLASS(encoding, alnum)                                \
         BOOST_SPIRIT_X3_CHAR_CLASS(encoding, alpha)                                \
         BOOST_SPIRIT_X3_CHAR_CLASS(encoding, digit)                                \
@@ -90,7 +75,6 @@ namespace boost { namespace spirit { namespace x3
         BOOST_SPIRIT_X3_CHAR_CLASS(encoding, blank)                                \
         BOOST_SPIRIT_X3_CHAR_CLASS(encoding, upper)                                \
     }                                                                           \
-    /***/
 
     BOOST_SPIRIT_X3_CHAR_CLASSES(standard)
     BOOST_SPIRIT_X3_CHAR_CLASSES(standard_wide)
@@ -125,6 +109,4 @@ namespace boost { namespace spirit { namespace x3
     using standard::space;
     using standard::blank;
     using standard::upper;
-}}}
-
-#endif
+}

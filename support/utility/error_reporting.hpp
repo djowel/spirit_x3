@@ -12,12 +12,12 @@
 #endif
 
 #include <boost/locale/encoding_utf.hpp>
-#include <boost/spirit/home/x3/support/ast/position_tagged.hpp>
+#include <x3/support/ast/position_tagged.hpp>
 #include <ostream>
 
 // Clang-style error handling utilities
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     // tag used to get our error handler from the context
     struct error_handler_tag;

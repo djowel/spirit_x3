@@ -11,7 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace testing
+namespace x3 { namespace testing
 {
     namespace fs = boost::filesystem;
 

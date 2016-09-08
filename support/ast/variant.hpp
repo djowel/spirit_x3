@@ -13,7 +13,7 @@
 #include <type_traits>
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename T>
     class forward_ast

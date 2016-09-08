@@ -10,7 +10,7 @@
 #define BOOST_SPIRIT_X3_CONTAINER_FEBRUARY_06_2007_1001AM
 
 #include <boost/fusion/support/category_of.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
+#include <x3/support/unused.hpp>
 #include <boost/detail/iterator.hpp>
 #include <boost/fusion/include/deque.hpp>
 #include <boost/tti/has_type.hpp>
@@ -22,7 +22,7 @@
 #include <iterator>
 #include <algorithm>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     //  This file contains some container utils for stl containers.

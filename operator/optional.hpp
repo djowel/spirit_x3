@@ -8,14 +8,14 @@
 #if !defined(SPIRIT_OPTIONAL_MARCH_23_2007_1117PM)
 #define SPIRIT_OPTIONAL_MARCH_23_2007_1117PM
 
-#include <boost/spirit/home/x3/core/proxy.hpp>
-#include <boost/spirit/home/x3/core/detail/parse_into_container.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
-#include <boost/spirit/home/x3/support/traits/optional_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_category.hpp>
+#include <x3/core/proxy.hpp>
+#include <x3/core/detail/parse_into_container.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/support/traits/move_to.hpp>
+#include <x3/support/traits/optional_traits.hpp>
+#include <x3/support/traits/attribute_category.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Subject>
     struct optional : proxy<Subject, optional<Subject>>
@@ -71,7 +71,7 @@ namespace boost { namespace spirit { namespace x3
     }
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Subject, typename Context>
     struct attribute_of<x3::optional<Subject>, Context>

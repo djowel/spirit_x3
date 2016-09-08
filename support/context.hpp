@@ -8,10 +8,10 @@
 #if !defined(BOOST_SPIRIT_X3_CONTEXT_JAN_4_2012_1215PM)
 #define BOOST_SPIRIT_X3_CONTEXT_JAN_4_2012_1215PM
 
-#include <boost/spirit/home/x3/support/unused.hpp>
+#include <x3/support/unused.hpp>
 #include <boost/mpl/identity.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename ID, typename T, typename Next = unused_type>
     struct context
@@ -74,7 +74,7 @@ namespace boost { namespace spirit { namespace x3
     {
         return { val };
     }
-    
+
     namespace detail
     {
         template <typename ID, typename T, typename Next, typename FoundVal>
@@ -83,7 +83,7 @@ namespace boost { namespace spirit { namespace x3
         {
             return next;
         }
-        
+
         template <typename ID, typename T, typename Next>
         inline context<ID, T, Next>
         make_unique_context(T& val, Next const& next, unused_type)
@@ -91,7 +91,7 @@ namespace boost { namespace spirit { namespace x3
             return { val, next };
         }
     }
-    
+
     template <typename ID, typename T, typename Next>
     inline auto
     make_unique_context(T& val, Next const& next)

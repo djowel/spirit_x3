@@ -7,11 +7,11 @@
 #if !defined(SPIRIT_DIFFERENCE_FEBRUARY_11_2007_1250PM)
 #define SPIRIT_DIFFERENCE_FEBRUARY_11_2007_1250PM
 
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/support/traits/has_attribute.hpp>
-#include <boost/spirit/home/x3/core/parser.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/support/traits/has_attribute.hpp>
+#include <x3/core/parser.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Left, typename Right>
     struct difference : binary_parser<Left, Right, difference<Left, Right>>
@@ -57,7 +57,7 @@ namespace boost { namespace spirit { namespace x3
     }
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Left, typename Right, typename Context>
     struct attribute_of<x3::difference<Left, Right>, Context>

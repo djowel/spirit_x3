@@ -11,11 +11,11 @@
 #if !defined(BOOST_SPIRIT_X3_DETAIL_EXTRACT_INT_APRIL_17_2006_0816AM)
 #define BOOST_SPIRIT_X3_DETAIL_EXTRACT_INT_APRIL_17_2006_0816AM
 
-#include <boost/spirit/home/x3/support/unused.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_type.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
-#include <boost/spirit/home/x3/support/traits/numeric_traits.hpp>
-#include <boost/spirit/home/support/char_encoding/ascii.hpp>
+#include <x3/support/unused.hpp>
+#include <x3/support/traits/attribute_type.hpp>
+#include <x3/support/traits/move_to.hpp>
+#include <x3/support/traits/numeric_traits.hpp>
+#include <support/char_encoding/ascii.hpp>
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
@@ -38,7 +38,7 @@
 # define SPIRIT_NUMERICS_LOOP_UNROLL 3
 #endif
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     ///////////////////////////////////////////////////////////////////////////
     //

@@ -12,7 +12,7 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/utility/enable_if.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     // Determine if T is a boolean type
@@ -112,10 +112,10 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
 
     template <typename T, typename Enable = void>
     struct is_infinite;
-    
+
     template <typename T, typename Enable = void>
     struct check_overflow : mpl::false_ {};
-        
+
     template <typename T>
     struct check_overflow<T, typename enable_if_c<integer_traits<T>::is_integral>::type>
         : mpl::true_ {};

@@ -11,7 +11,7 @@
 
 #include <boost/mpl/identity.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     //  transform_attribute

@@ -7,13 +7,13 @@
 #if !defined(SPIRIT_ALTERNATIVE_DETAIL_JAN_07_2013_1245PM)
 #define SPIRIT_ALTERNATIVE_DETAIL_JAN_07_2013_1245PM
 
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/support/traits/is_variant.hpp>
-#include <boost/spirit/home/x3/support/traits/tuple_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
-#include <boost/spirit/home/x3/support/traits/variant_has_substitute.hpp>
-#include <boost/spirit/home/x3/support/traits/variant_find_substitute.hpp>
-#include <boost/spirit/home/x3/core/detail/parse_into_container.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/support/traits/is_variant.hpp>
+#include <x3/support/traits/tuple_traits.hpp>
+#include <x3/support/traits/move_to.hpp>
+#include <x3/support/traits/variant_has_substitute.hpp>
+#include <x3/support/traits/variant_find_substitute.hpp>
+#include <x3/core/detail/parse_into_container.hpp>
 #include <boost/variant/variant.hpp>
 
 #include <boost/mpl/copy_if.hpp>
@@ -27,13 +27,13 @@
 
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Left, typename Right>
     struct alternative;
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     struct pass_variant_unused
     {

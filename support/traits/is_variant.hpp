@@ -12,7 +12,7 @@
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/bool.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     namespace detail
     {

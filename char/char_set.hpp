@@ -4,42 +4,34 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CHAR_SET_OCT_12_2014_1051AM)
-#define BOOST_SPIRIT_X3_CHAR_SET_OCT_12_2014_1051AM
+#pragma once
 
-#include <boost/spirit/home/x3/char/char_parser.hpp>
-#include <boost/spirit/home/x3/char/detail/cast_char.hpp>
-#include <boost/spirit/home/x3/support/traits/string_traits.hpp>
-#include <boost/spirit/home/x3/support/utility/utf8.hpp>
-#include <boost/spirit/home/x3/support/no_case.hpp>
-#include <boost/spirit/home/support/char_set/basic_chset.hpp>
+#include <x3/char/char_parser.hpp>
+#include <x3/char/detail/cast_char.hpp>
+#include <x3/support/traits/string_traits.hpp>
+#include <x3/support/utility/utf8.hpp>
+#include <x3/support/no_case.hpp>
+#include <support/char_set/basic_chset.hpp>
 
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost { namespace spirit { namespace x3
-{
+namespace x3 {
     ///////////////////////////////////////////////////////////////////////////
     // Parser for a character range
     ///////////////////////////////////////////////////////////////////////////
     template <typename Encoding, typename Attribute = typename Encoding::char_type>
-    struct char_range
-      : char_parser< char_range<Encoding, Attribute> >
-    {
+    struct char_range : char_parser< char_range<Encoding, Attribute> > {
 
         typedef typename Encoding::char_type char_type;
         typedef Encoding encoding;
         typedef Attribute attribute_type;
-        static bool const has_attribute =
-            !is_same<unused_type, attribute_type>::value;
+        static bool const has_attribute = !is_same<unused_type, attribute_type>::value;
 
 
-        char_range(char_type from_, char_type to_)
-          : from(from_), to(to_) {}
+        char_range(char_type from_, char_type to_) : from(from_), to(to_) {}
 
         template <typename Char, typename Context>
-        bool test(Char ch_, Context& context) const
-        {
-
+        bool test(Char ch_, Context& context) const {
             char_type ch = char_type(ch_);  // optimize for token based parsing
             return ((sizeof(Char) <= sizeof(char_type)) || encoding::ischar(ch_))
                         && (get_case_compare<encoding>(context)(ch, from) >= 0 )
@@ -54,56 +46,37 @@ namespace boost { namespace spirit { namespace x3
     // Parser for a character set
     ///////////////////////////////////////////////////////////////////////////
     template <typename Encoding, typename Attribute = typename Encoding::char_type>
-    struct char_set : char_parser<char_set<Encoding, Attribute>>
-    {
+    struct char_set : char_parser<char_set<Encoding, Attribute>> {
         typedef typename Encoding::char_type char_type;
         typedef Encoding encoding;
         typedef Attribute attribute_type;
-        static bool const has_attribute =
-            !is_same<unused_type, attribute_type>::value;
+        static bool const has_attribute = !is_same<unused_type, attribute_type>::value;
 
         template <typename String>
-        char_set(String const& str)
-        {
+        char_set(String const& str) {
             using spirit::x3::detail::cast_char;
 
-            typedef typename
-                remove_const<
-                    typename traits::char_type_of<String>::type
-                >::type
-            in_type;
+            typedef typename remove_const< typename traits::char_type_of<String>::type >::type in_type;
 
-            in_type const* definition =
-                (in_type const*)traits::get_c_string(str);
-            in_type ch = *definition++;
-            while (ch)
-            {
+            in_type const* definition = (in_type const*)traits::get_c_string(str); in_type ch = *definition++;
+
+            while (ch) {
                 in_type next = *definition++;
-                if (next == '-')
-                {
+                if (next == '-') {
                     next = *definition++;
-                    if (next == 0)
-                    {
+                    if (next == 0) {
                         chset.set(cast_char<char_type>(ch));
                         chset.set('-');
                         break;
                     }
-                    chset.set(
-                        cast_char<char_type>(ch),
-                        cast_char<char_type>(next)
-                    );
-                }
-                else
-                {
-                    chset.set(cast_char<char_type>(ch));
-                }
+                    chset.set(cast_char<char_type>(ch), cast_char<char_type>(next));
+                } else {chset.set(cast_char<char_type>(ch));}
                 ch = next;
             }
         }
 
         template <typename Char, typename Context>
-        bool test(Char ch_, Context const& context) const
-        {
+        bool test(Char ch_, Context const& context) const {
             return ((sizeof(Char) <= sizeof(char_type)) || encoding::ischar(ch_))
                 && get_case_compare<encoding>(context).in_set(ch_,chset);
         }
@@ -112,25 +85,17 @@ namespace boost { namespace spirit { namespace x3
     };
 
     template <typename Encoding, typename Attribute>
-    struct get_info<char_set<Encoding, Attribute>>
-    {
+    struct get_info<char_set<Encoding, Attribute>> {
         typedef std::string result_type;
-        std::string operator()(char_set<Encoding, Attribute> const& p) const
-        {
-            return "char-set";
-        }
+        std::string operator()(char_set<Encoding, Attribute> const& p) const {return "char-set"; }
     };
 
     template <typename Encoding, typename Attribute>
-    struct get_info<char_range<Encoding, Attribute>>
-    {
+    struct get_info<char_range<Encoding, Attribute>> {
         typedef std::string result_type;
-        std::string operator()(char_range<Encoding, Attribute> const& p) const
-        {
+        std::string operator()(char_range<Encoding, Attribute> const& p) const {
             return "char_range \"" + to_utf8(Encoding::toucs4(p.from)) + '-' + to_utf8(Encoding::toucs4(p.to))+ '"';
         }
     };
 
-}}}
-
-#endif
+}

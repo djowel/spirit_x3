@@ -7,13 +7,13 @@
 #if !defined(SPIRIT_SEQUENCE_DETAIL_JAN_06_2013_1015AM)
 #define SPIRIT_SEQUENCE_DETAIL_JAN_06_2013_1015AM
 
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_category.hpp>
-#include <boost/spirit/home/x3/support/traits/make_attribute.hpp>
-#include <boost/spirit/home/x3/support/traits/has_attribute.hpp>
-#include <boost/spirit/home/x3/support/traits/is_substitute.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/core/detail/parse_into_container.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/support/traits/attribute_category.hpp>
+#include <x3/support/traits/make_attribute.hpp>
+#include <x3/support/traits/has_attribute.hpp>
+#include <x3/support/traits/is_substitute.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/core/detail/parse_into_container.hpp>
 
 #include <boost/fusion/include/begin.hpp>
 #include <boost/fusion/include/end.hpp>
@@ -35,13 +35,13 @@
 #include <boost/type_traits/add_reference.hpp>
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Left, typename Right>
     struct sequence;
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     template <typename Parser, typename Context, typename Enable = void>
     struct sequence_size

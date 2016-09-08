@@ -8,9 +8,9 @@
 #if !defined(BOOST_SPIRIT_X3_VARIANT_FIND_SUBSTITUTE_APR_18_2014_930AM)
 #define BOOST_SPIRIT_X3_VARIANT_FIND_SUBSTITUTE_APR_18_2014_930AM
 
-#include <boost/spirit/home/x3/support/traits/is_substitute.hpp>
+#include <x3/support/traits/is_substitute.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Variant, typename Attribute>
     struct variant_find_substitute
@@ -42,7 +42,7 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
             >::type
         type;
     };
-    
+
     template <typename Variant>
     struct variant_find_substitute<Variant, Variant>
         : mpl::identity<Variant> {};

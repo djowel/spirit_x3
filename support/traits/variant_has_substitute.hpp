@@ -8,9 +8,9 @@
 #if !defined(BOOST_SPIRIT_X3_VARIANT_HAS_SUBSTITUTE_APR_18_2014_925AM)
 #define BOOST_SPIRIT_X3_VARIANT_HAS_SUBSTITUTE_APR_18_2014_925AM
 
-#include <boost/spirit/home/x3/support/traits/is_substitute.hpp>
+#include <x3/support/traits/is_substitute.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Variant, typename Attribute>
     struct variant_has_substitute_impl

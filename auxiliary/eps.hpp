@@ -7,11 +7,11 @@
 #if !defined(BOOST_SPIRIT_X3_EPS_MARCH_23_2007_0454PM)
 #define BOOST_SPIRIT_X3_EPS_MARCH_23_2007_0454PM
 
-#include <boost/spirit/home/x3/core/skip_over.hpp>
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
+#include <x3/core/skip_over.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/unused.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     struct rule_context_tag;
 

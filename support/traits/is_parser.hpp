@@ -9,13 +9,13 @@
 #define BOOST_SPIRIT_X3_IS_PARSER_MAY_20_2013_0235PM
 
 #include <boost/mpl/bool.hpp>
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/utility/sfinae.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/utility/sfinae.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
-    // is_parser<T>: metafunction that evaluates to mpl::true_ if a type T 
+    // is_parser<T>: metafunction that evaluates to mpl::true_ if a type T
     // can be used as a parser, mpl::false_ otherwise
     ///////////////////////////////////////////////////////////////////////////
     template <typename T, typename Enable = void>

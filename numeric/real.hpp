@@ -7,12 +7,12 @@
 #if !defined(BOOST_SPIRIT_X3_REAL_APRIL_18_2006_0850AM)
 #define BOOST_SPIRIT_X3_REAL_APRIL_18_2006_0850AM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/core/skip_over.hpp>
-#include <boost/spirit/home/x3/numeric/real_policies.hpp>
-#include <boost/spirit/home/x3/support/numeric_utils/extract_real.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/core/skip_over.hpp>
+#include <x3/numeric/real_policies.hpp>
+#include <x3/support/numeric_utils/extract_real.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename T, typename RealPolicies = real_policies<T> >
     struct real_parser : parser<real_parser<T, RealPolicies> >

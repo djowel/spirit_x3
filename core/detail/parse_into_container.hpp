@@ -9,19 +9,19 @@
 
 #include <type_traits>
 
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/value_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/support/traits/handles_container.hpp>
-#include <boost/spirit/home/x3/support/traits/has_attribute.hpp>
-#include <boost/spirit/home/x3/support/traits/is_substitute.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/value_traits.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/support/traits/handles_container.hpp>
+#include <x3/support/traits/has_attribute.hpp>
+#include <x3/support/traits/is_substitute.hpp>
+#include <x3/support/traits/move_to.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/fusion/include/front.hpp>
 #include <boost/fusion/include/back.hpp>
 #include <boost/variant/apply_visitor.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     template <typename Attribute, typename Value>
     struct saver_visitor;

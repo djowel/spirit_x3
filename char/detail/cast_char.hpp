@@ -12,7 +12,7 @@
 #include <boost/type_traits/make_unsigned.hpp>
 #include <boost/type_traits/make_signed.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     // Here's the thing... typical encodings (except ASCII) deal with unsigned
     // integers > 127 (ASCII uses only 127). Yet, most char and wchar_t are signed.

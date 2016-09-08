@@ -11,6 +11,6 @@
 #pragma once
 #endif
 
-#include <boost/spirit/home/x3/binary/binary.hpp>
+#include <x3/binary/binary.hpp>
 
 #endif

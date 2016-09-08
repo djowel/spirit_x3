@@ -8,18 +8,18 @@
 #if !defined(BOOST_SPIRIT_X3_SYMBOLS_MARCH_11_2007_1055AM)
 #define BOOST_SPIRIT_X3_SYMBOLS_MARCH_11_2007_1055AM
 
-#include <boost/spirit/home/x3/core/skip_over.hpp>
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/string/tst.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
-#include <boost/spirit/home/x3/support/traits/string_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
-#include <boost/spirit/home/x3/support/no_case.hpp>
+#include <x3/core/skip_over.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/string/tst.hpp>
+#include <x3/support/unused.hpp>
+#include <x3/support/traits/string_traits.hpp>
+#include <x3/support/traits/move_to.hpp>
+#include <x3/support/no_case.hpp>
 
-#include <boost/spirit/home/support/char_encoding/ascii.hpp>
-#include <boost/spirit/home/support/char_encoding/iso8859_1.hpp>
-#include <boost/spirit/home/support/char_encoding/standard.hpp>
-#include <boost/spirit/home/support/char_encoding/standard_wide.hpp>
+#include <support/char_encoding/ascii.hpp>
+#include <support/char_encoding/iso8859_1.hpp>
+#include <support/char_encoding/standard.hpp>
+#include <support/char_encoding/standard_wide.hpp>
 
 #include <boost/fusion/include/at.hpp>
 #include <boost/range.hpp>
@@ -34,7 +34,7 @@
 # pragma warning(disable: 4355) // 'this' : used in base member initializer list warning
 #endif
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <
         typename Encoding

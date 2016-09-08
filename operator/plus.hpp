@@ -8,12 +8,12 @@
 #if !defined(SPIRIT_PLUS_MARCH_13_2007_0127PM)
 #define SPIRIT_PLUS_MARCH_13_2007_0127PM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/core/detail/parse_into_container.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/core/detail/parse_into_container.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Subject>
     struct plus : unary_parser<Subject, plus<Subject>>
@@ -48,7 +48,7 @@ namespace boost { namespace spirit { namespace x3
     }
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Subject, typename Context>
     struct attribute_of<x3::plus<Subject>, Context>

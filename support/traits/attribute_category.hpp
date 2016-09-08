@@ -14,15 +14,15 @@
 #include <boost/fusion/include/copy.hpp>
 #include <boost/fusion/include/is_sequence.hpp>
 #include <boost/fusion/support/category_of.hpp>
-#include <boost/spirit/home/x3/support/traits/is_variant.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/is_variant.hpp>
+#include <x3/support/traits/container_traits.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
    struct unused_type;
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     struct unused_attribute {};
     struct plain_attribute {};
@@ -47,7 +47,7 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
     template <typename T>
     struct attribute_category< T
 	, typename enable_if<
-	      typename mpl::eval_if< 
+	      typename mpl::eval_if<
 		  fusion::traits::is_sequence<T>
 		  , fusion::traits::is_associative<T>
 		  , mpl::false_
@@ -59,7 +59,7 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
 	, typename enable_if<
 	      mpl::and_<
 		  fusion::traits::is_sequence<T>
-		  , mpl::not_<fusion::traits::is_associative<T> > 
+		  , mpl::not_<fusion::traits::is_associative<T> >
 		  > >::type >
         : mpl::identity<tuple_attribute> {};
 

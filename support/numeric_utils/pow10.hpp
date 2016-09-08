@@ -11,15 +11,15 @@
 
 #include <boost/config/no_tr1/cmath.hpp>
 #include <boost/limits.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
-#include <boost/spirit/home/x3/support/traits/numeric_traits.hpp>
+#include <x3/support/unused.hpp>
+#include <x3/support/traits/numeric_traits.hpp>
 
 #if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
 # pragma warning(push)
 # pragma warning(disable: 4244)   // conversion from 'double' to 'float', possible loss of data
 #endif
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     namespace detail
     {

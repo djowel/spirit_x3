@@ -8,9 +8,9 @@
 #define BOOST_SPIRIT_X3_IS_CALLABLE_HPP_INCLUDED
 
 #include <boost/mpl/bool.hpp>
-#include <boost/spirit/home/x3/support/utility/sfinae.hpp>
+#include <x3/support/utility/sfinae.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     template <typename Sig, typename Enable = void>
     struct is_callable_impl : mpl::false_ {};
@@ -22,7 +22,7 @@ namespace boost { namespace spirit { namespace x3 { namespace detail
     {};
 }}}}
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Sig>
     struct is_callable;

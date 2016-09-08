@@ -7,10 +7,10 @@
 #if !defined(BOOST_SPIRIT_X3_GUARD_FERBRUARY_02_2013_0649PM)
 #define BOOST_SPIRIT_X3_GUARD_FERBRUARY_02_2013_0649PM
 
-#include <boost/spirit/home/x3/support/context.hpp>
-#include <boost/spirit/home/x3/directive/expect.hpp>
+#include <x3/support/context.hpp>
+#include <x3/directive/expect.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     enum class error_handler_result
     {

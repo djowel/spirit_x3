@@ -8,12 +8,12 @@
 #if !defined(BOOST_SPIRIT_X3_UINT_APR_17_2006_0901AM)
 #define BOOST_SPIRIT_X3_UINT_APR_17_2006_0901AM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/core/skip_over.hpp>
-#include <boost/spirit/home/x3/support/numeric_utils/extract_int.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/core/skip_over.hpp>
+#include <x3/support/numeric_utils/extract_int.hpp>
 #include <cstdint>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     ///////////////////////////////////////////////////////////////////////////
     template <

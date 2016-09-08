@@ -4,12 +4,10 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
-#if !defined(BOOST_SPIRIT_X3_CHAR_CLASS_TAGS_APRIL_16_2006_1051AM)
-#define BOOST_SPIRIT_X3_CHAR_CLASS_TAGS_APRIL_16_2006_1051AM
+#pragma once
 
 
-namespace boost { namespace spirit { namespace x3
-{
+namespace x3 {
     ///////////////////////////////////////////////////////////////////////////
     struct char_tag {};
     struct alnum_tag {};
@@ -24,6 +22,4 @@ namespace boost { namespace spirit { namespace x3
     struct xdigit_tag {};
     struct lower_tag {};
     struct upper_tag {};
-}}}
-
-#endif
+}

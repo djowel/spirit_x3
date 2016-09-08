@@ -7,21 +7,21 @@
 #if !defined(BOOST_SPIRIT_X3_LITERAL_STRING_APR_18_2006_1125PM)
 #define BOOST_SPIRIT_X3_LITERAL_STRING_APR_18_2006_1125PM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/core/skip_over.hpp>
-#include <boost/spirit/home/x3/string/detail/string_parse.hpp>
-#include <boost/spirit/home/x3/support/no_case.hpp>
-#include <boost/spirit/home/x3/string/detail/no_case_string_parse.hpp>
-#include <boost/spirit/home/x3/support/utility/utf8.hpp>
-#include <boost/spirit/home/support/char_encoding/ascii.hpp>
-#include <boost/spirit/home/support/char_encoding/standard.hpp>
-#include <boost/spirit/home/support/char_encoding/standard_wide.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/core/skip_over.hpp>
+#include <x3/string/detail/string_parse.hpp>
+#include <x3/support/no_case.hpp>
+#include <x3/string/detail/no_case_string_parse.hpp>
+#include <x3/support/utility/utf8.hpp>
+#include <support/char_encoding/ascii.hpp>
+#include <support/char_encoding/standard.hpp>
+#include <support/char_encoding/standard_wide.hpp>
 
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/add_reference.hpp>
 #include <string>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename String, typename Encoding,
         typename Attribute = std::basic_string<typename Encoding::char_type>>

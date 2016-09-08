@@ -12,7 +12,7 @@
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/and.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename A, typename B>
     struct has_same_size

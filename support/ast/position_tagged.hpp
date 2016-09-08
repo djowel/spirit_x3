@@ -10,7 +10,7 @@
 #include <boost/range.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     struct position_tagged
     {
@@ -52,7 +52,7 @@ namespace boost { namespace spirit { namespace x3
             // returns an empty position
             return boost::iterator_range<iterator_type>();
         }
-        
+
         // This will catch all nodes except those inheriting from position_tagged
         template <typename AST>
         void annotate(AST& ast, iterator_type first, iterator_type last, mpl::false_)

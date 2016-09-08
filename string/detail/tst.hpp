@@ -11,7 +11,7 @@
 #include <boost/detail/iterator.hpp>
 #include <boost/assert.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace detail
+namespace x3 { namespace detail
 {
     // This file contains low level TST routines, not for
     // public consumption.

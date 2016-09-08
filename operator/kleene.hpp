@@ -8,12 +8,12 @@
 #if !defined(SPIRIT_KLEENE_JANUARY_07_2007_0818AM)
 #define SPIRIT_KLEENE_JANUARY_07_2007_0818AM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/core/detail/parse_into_container.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/core/detail/parse_into_container.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Subject>
     struct kleene : unary_parser<Subject, kleene<Subject>>
@@ -44,7 +44,7 @@ namespace boost { namespace spirit { namespace x3
     }
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Subject, typename Context>
     struct attribute_of<x3::kleene<Subject>, Context>

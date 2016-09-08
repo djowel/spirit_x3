@@ -7,9 +7,9 @@
 #if !defined(BOOST_SPIRIT_X3_TST_JUNE_03_2007_1031AM)
 #define BOOST_SPIRIT_X3_TST_JUNE_03_2007_1031AM
 
-#include <boost/spirit/home/x3/string/detail/tst.hpp>
+#include <x3/string/detail/tst.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     struct tst_pass_through
     {

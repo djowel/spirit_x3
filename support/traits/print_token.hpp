@@ -13,7 +13,7 @@
 #include <boost/type_traits/is_convertible.hpp>
 #include <cctype>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     // generate debug output for lookahead token (character) stream

@@ -9,10 +9,10 @@
 #ifndef BOOST_SPIRIT_X3_ATTR_JUL_23_2008_0956AM
 #define BOOST_SPIRIT_X3_ATTR_JUL_23_2008_0956AM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/unused.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/move_to.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_cv.hpp>
 #include <boost/type_traits/remove_reference.hpp>
@@ -21,7 +21,7 @@
 #include <string>
 #include <utility>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Value>
     struct attr_parser : parser<attr_parser<Value>>
@@ -32,7 +32,7 @@ namespace boost { namespace spirit { namespace x3
             !is_same<unused_type, attribute_type>::value;
         static bool const handles_container =
             traits::is_container<attribute_type>::value;
-        
+
         attr_parser(Value const& value)
           : value_(value) {}
         attr_parser(Value&& value)
@@ -54,7 +54,7 @@ namespace boost { namespace spirit { namespace x3
         // silence MSVC warning C4512: assignment operator could not be generated
         attr_parser& operator= (attr_parser const&);
     };
-    
+
     template <typename Value, std::size_t N>
     struct attr_parser<Value[N]> : parser<attr_parser<Value[N]>>
     {
@@ -63,7 +63,7 @@ namespace boost { namespace spirit { namespace x3
         static bool const has_attribute =
             !is_same<unused_type, attribute_type>::value;
         static bool const handles_container = true;
-        
+
         attr_parser(Value const (&value)[N])
         {
             std::copy(value + 0, value + N, value_ + 0);
@@ -90,7 +90,7 @@ namespace boost { namespace spirit { namespace x3
         // silence MSVC warning C4512: assignment operator could not be generated
         attr_parser& operator= (attr_parser const&);
     };
-    
+
     template <typename Value>
     struct get_info<attr_parser<Value>>
     {
@@ -110,7 +110,7 @@ namespace boost { namespace spirit { namespace x3
         {
             return { std::forward<Value>(value) };
         }
-        
+
         template <typename Value, std::size_t N>
         attr_parser<typename remove_cv<Value>::type[N]>
         operator()(Value (&value)[N]) const

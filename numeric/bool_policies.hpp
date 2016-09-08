@@ -8,10 +8,10 @@
 #if !defined(SPIRIT_QI_BOOL_POLICIES_SEP_29_2009_0710AM)
 #define SPIRIT_QI_BOOL_POLICIES_SEP_29_2009_0710AM
 
-#include <boost/spirit/home/x3/string/detail/string_parse.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
+#include <x3/string/detail/string_parse.hpp>
+#include <x3/support/traits/move_to.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     ///////////////////////////////////////////////////////////////////////////
     //  Default boolean policies

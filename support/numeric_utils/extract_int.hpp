@@ -8,11 +8,11 @@
 #if !defined(BOOST_SPIRIT_X3_EXTRACT_INT_APRIL_17_2006_0830AM)
 #define BOOST_SPIRIT_X3_EXTRACT_INT_APRIL_17_2006_0830AM
 
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
-#include <boost/spirit/home/x3/support/numeric_utils/detail/extract_int.hpp>
+#include <x3/support/traits/move_to.hpp>
+#include <x3/support/numeric_utils/detail/extract_int.hpp>
 #include <boost/assert.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     ///////////////////////////////////////////////////////////////////////////
     //  Extract the prefix sign (- or +), return true if a '-' was found

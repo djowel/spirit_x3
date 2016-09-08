@@ -7,12 +7,12 @@
 #if !defined(BOOST_SPIRIT_X3__ANNOTATE_ON_SUCCESS_HPP)
 #define BOOST_SPIRIT_X3__ANNOTATE_ON_SUCCESS_HPP
 
-#include <boost/spirit/home/x3/support/ast/variant.hpp>
-#include <boost/spirit/home/x3/support/context.hpp>
-#include <boost/spirit/home/x3/support/utility/error_reporting.hpp>
-#include <boost/spirit/home/x3/support/utility/lambda_visitor.hpp>
+#include <x3/support/ast/variant.hpp>
+#include <x3/support/context.hpp>
+#include <x3/support/utility/error_reporting.hpp>
+#include <x3/support/utility/lambda_visitor.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     ///////////////////////////////////////////////////////////////////////////
     //  The on_success handler tags the AST with the iterator position

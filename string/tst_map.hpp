@@ -7,11 +7,11 @@
 #if !defined(BOOST_SPIRIT_X3_TST_MAP_JUNE_03_2007_1143AM)
 #define BOOST_SPIRIT_X3_TST_MAP_JUNE_03_2007_1143AM
 
-#include <boost/spirit/home/x3/string/detail/tst.hpp>
+#include <x3/string/detail/tst.hpp>
 #include <unordered_map>
 #include <boost/pool/object_pool.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     struct tst_pass_through; // declared in tst.hpp
 

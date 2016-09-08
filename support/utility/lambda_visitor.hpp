@@ -7,7 +7,7 @@
 #if !defined(BOOST_SPIRIT_X3_LAMBDA_VISITOR_MAY_19_2014_1116AM)
 #define BOOST_SPIRIT_X3_LAMBDA_VISITOR_MAY_19_2014_1116AM
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename RT, typename... Lambdas>
     struct lambda_visitor;

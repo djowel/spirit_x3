@@ -18,7 +18,7 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     struct unused_type
     {

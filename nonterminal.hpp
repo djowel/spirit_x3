@@ -7,9 +7,9 @@
 #if !defined(BOOST_SPIRIT_X3_NONTERMINAL_FEBRUARY_12_2007_1018AM)
 #define BOOST_SPIRIT_X3_NONTERMINAL_FEBRUARY_12_2007_1018AM
 
-#include <boost/spirit/home/x3/nonterminal/rule.hpp>
-//~ #include <boost/spirit/home/x3/nonterminal/error_handler.hpp>
-//~ #include <boost/spirit/home/x3/nonterminal/debug_handler.hpp>
-//~ #include <boost/spirit/home/x3/nonterminal/success_handler.hpp>
+#include <x3/nonterminal/rule.hpp>
+//~ #include <x3/nonterminal/error_handler.hpp>
+//~ #include <x3/nonterminal/debug_handler.hpp>
+//~ #include <x3/nonterminal/success_handler.hpp>
 
 #endif

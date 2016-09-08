@@ -8,14 +8,14 @@
 #if !defined(BOOST_SPIRIT_X3_SFINAE_MAY_20_2013_0840AM)
 #define BOOST_SPIRIT_X3_SFINAE_MAY_20_2013_0840AM
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Expr, typename T = void>
     struct disable_if_substitution_failure
     {
         typedef T type;
     };
-    
+
     template <typename Expr, typename T>
     struct lazy_disable_if_substitution_failure
     {

@@ -8,12 +8,12 @@
 #if !defined(SPIRIT_LIST_MARCH_24_2007_1031AM)
 #define SPIRIT_LIST_MARCH_24_2007_1031AM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/attribute_of.hpp>
-#include <boost/spirit/home/x3/core/detail/parse_into_container.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/attribute_of.hpp>
+#include <x3/core/detail/parse_into_container.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename Left, typename Right>
     struct list : binary_parser<Left, Right, list<Left, Right>>
@@ -58,7 +58,7 @@ namespace boost { namespace spirit { namespace x3
     }
 }}}
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Left, typename Right, typename Context>
     struct attribute_of<x3::list<Left, Right>, Context>

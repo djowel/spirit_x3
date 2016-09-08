@@ -12,9 +12,9 @@
 #include <boost/mpl/if.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
+#include <x3/support/unused.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename Attribute>
     struct make_attribute_base
@@ -66,7 +66,7 @@ namespace boost { namespace spirit { namespace x3 { namespace traits
             return unused;
         }
     };
-    
+
     template <>
     struct make_attribute<unused_type, unused_type>
     {

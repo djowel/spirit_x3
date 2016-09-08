@@ -8,7 +8,7 @@
 #if !defined(BOOST_SPIRIT_X3_IS_SUBSTITUTE_JAN_9_2012_1049PM)
 #define BOOST_SPIRIT_X3_IS_SUBSTITUTE_JAN_9_2012_1049PM
 
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/container_traits.hpp>
 #include <boost/fusion/include/is_sequence.hpp>
 #include <boost/fusion/include/map.hpp>
 #include <boost/fusion/include/value_at_key.hpp>
@@ -25,7 +25,7 @@
 #include <boost/optional/optional.hpp>
 #include <boost/type_traits/is_same.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     // Find out if T can be a (strong) substitute for Attribute

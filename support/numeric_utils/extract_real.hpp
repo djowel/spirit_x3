@@ -12,10 +12,10 @@
 #include <cmath>
 #include <boost/limits.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
-#include <boost/spirit/home/x3/support/numeric_utils/pow10.hpp>
-#include <boost/spirit/home/x3/support/numeric_utils/sign.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
+#include <x3/support/unused.hpp>
+#include <x3/support/numeric_utils/pow10.hpp>
+#include <x3/support/numeric_utils/sign.hpp>
+#include <x3/support/traits/move_to.hpp>
 #include <boost/assert.hpp>
 
 #if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
@@ -24,7 +24,7 @@
 # pragma warning(disable: 4127)   // conditional expression is constant
 #endif
 
-namespace boost { namespace spirit { namespace x3 { namespace extension
+namespace x3 { namespace extension
 {
     using x3::traits::pow10;
 
@@ -119,7 +119,7 @@ namespace boost { namespace spirit { namespace x3 { namespace extension
     }
 }}}}
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <typename T, typename RealPolicies>
     struct extract_real

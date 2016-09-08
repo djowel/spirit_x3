@@ -7,9 +7,9 @@
 #if !defined(BOOST_SPIRIT_X3_NUMERIC_FEBRUARY_05_2007_1231PM)
 #define BOOST_SPIRIT_X3_NUMERIC_FEBRUARY_05_2007_1231PM
 
-#include <boost/spirit/home/x3/numeric/bool.hpp>
-#include <boost/spirit/home/x3/numeric/int.hpp>
-#include <boost/spirit/home/x3/numeric/uint.hpp>
-#include <boost/spirit/home/x3/numeric/real.hpp>
+#include <x3/numeric/bool.hpp>
+#include <x3/numeric/int.hpp>
+#include <x3/numeric/uint.hpp>
+#include <x3/numeric/real.hpp>
 
 #endif

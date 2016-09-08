@@ -8,18 +8,18 @@
 #if !defined(BOOST_SPIRIT_X3_AUXILIARY_ANY_PARSER_APR_09_2014_1145PM)
 #define BOOST_SPIRIT_X3_AUXILIARY_ANY_PARSER_APR_09_2014_1145PM
 
-#include <boost/spirit/home/x3/core/parser.hpp>
-#include <boost/spirit/home/x3/support/context.hpp>
-#include <boost/spirit/home/x3/support/subcontext.hpp>
-#include <boost/spirit/home/x3/support/unused.hpp>
-#include <boost/spirit/home/x3/support/traits/container_traits.hpp>
-#include <boost/spirit/home/x3/support/traits/has_attribute.hpp>
-#include <boost/spirit/home/x3/support/traits/move_to.hpp>
-#include <boost/spirit/home/x3/support/traits/is_parser.hpp>
+#include <x3/core/parser.hpp>
+#include <x3/support/context.hpp>
+#include <x3/support/subcontext.hpp>
+#include <x3/support/unused.hpp>
+#include <x3/support/traits/container_traits.hpp>
+#include <x3/support/traits/has_attribute.hpp>
+#include <x3/support/traits/move_to.hpp>
+#include <x3/support/traits/is_parser.hpp>
 #include <memory>
 #include <string>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     template <
         typename Iterator

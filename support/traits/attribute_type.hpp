@@ -10,7 +10,7 @@
 
 #include <boost/mpl/identity.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     ///////////////////////////////////////////////////////////////////////////
     // Retrieve the attribute type to use from the given type

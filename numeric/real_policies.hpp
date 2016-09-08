@@ -8,10 +8,10 @@
 #if !defined(SPIRIT_REAL_POLICIES_APRIL_17_2006_1158PM)
 #define SPIRIT_REAL_POLICIES_APRIL_17_2006_1158PM
 
-#include <boost/spirit/home/x3/string/detail/string_parse.hpp>
-#include <boost/spirit/home/x3/support/numeric_utils/extract_int.hpp>
+#include <x3/string/detail/string_parse.hpp>
+#include <x3/support/numeric_utils/extract_int.hpp>
 
-namespace boost { namespace spirit { namespace x3
+namespace x3
 {
     ///////////////////////////////////////////////////////////////////////////
     //  Default (unsigned) real number policies

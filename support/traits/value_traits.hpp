@@ -11,7 +11,7 @@
 
 #include <boost/utility/value_init.hpp>
 
-namespace boost { namespace spirit { namespace x3 { namespace traits
+namespace x3 { namespace traits
 {
     template <typename T, typename Enable = void>
     struct value_initialize
