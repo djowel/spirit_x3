@@ -4,10 +4,23 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_NOT_PREDICATE_MARCH_23_2007_0618PM)
-#define SPIRIT_NOT_PREDICATE_MARCH_23_2007_0618PM
+#pragma once
 
 #include <x3/core/parser.hpp>
+
+namespace x4 {
+
+template <class Subject>
+struct not_predicate {
+    Subject subject;
+
+    template <class Range>
+    bool check(Range r) const {return !bool(subject.parse(r));}
+};
+
+/*
+
+}
 
 namespace x3
 {
@@ -25,7 +38,7 @@ namespace x3
         template <typename Iterator, typename Context
           , typename RContext, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
-          , Context const& context, RContext& rcontext, Attribute& /*attr*/) const
+          , Context const& context, RContext& rcontext, Attribute&) const
         {
             Iterator i = first;
             return !this->subject.parse(i, last, context, rcontext, unused);
@@ -38,6 +51,6 @@ namespace x3
     {
         return { as_parser(subject) };
     }
-}}}
+}
 
-#endif
+*/

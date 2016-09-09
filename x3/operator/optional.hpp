@@ -5,8 +5,7 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_OPTIONAL_MARCH_23_2007_1117PM)
-#define SPIRIT_OPTIONAL_MARCH_23_2007_1117PM
+#pragma once
 
 #include <x3/core/proxy.hpp>
 #include <x3/core/detail/parse_into_container.hpp>
@@ -14,6 +13,20 @@
 #include <x3/support/traits/move_to.hpp>
 #include <x3/support/traits/optional_traits.hpp>
 #include <x3/support/traits/attribute_category.hpp>
+
+namespace x4 {
+
+template <class Subject>
+struct optional_op {
+    Subject subject;
+
+    template <class Range>
+    auto check() const {return always(subject.check());}
+};
+
+}
+
+/*
 
 namespace x3
 {
@@ -69,7 +82,7 @@ namespace x3
     {
         return { as_parser(subject) };
     }
-}}}
+}
 
 namespace x3 { namespace traits
 {
@@ -77,6 +90,6 @@ namespace x3 { namespace traits
     struct attribute_of<x3::optional<Subject>, Context>
         : build_optional<
             typename attribute_of<Subject, Context>::type> {};
-}}}}
+}}
 
-#endif
+*/

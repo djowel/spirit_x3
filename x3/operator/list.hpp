@@ -49,14 +49,9 @@ namespace x3
     };
 
     template <typename Left, typename Right>
-    inline list<
-        typename extension::as_parser<Left>::value_type
-      , typename extension::as_parser<Right>::value_type>
-    operator%(Left const& left, Right const& right)
-    {
-        return { as_parser(left), as_parser(right) };
-    }
-}}}
+    inline list< typename extension::as_parser<Left>::value_type , typename extension::as_parser<Right>::value_type>
+    operator%(Left const& left, Right const& right) {return { as_parser(left), as_parser(right) }; }
+}
 
 namespace x3 { namespace traits
 {
@@ -64,6 +59,6 @@ namespace x3 { namespace traits
     struct attribute_of<x3::list<Left, Right>, Context>
         : traits::build_container<
             typename attribute_of<Left, Context>::type> {};
-}}}}
+}}
 
 #endif

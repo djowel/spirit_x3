@@ -1,0 +1,3 @@
+/Users/Mark/Projects/spirit/llvm/CMakeFiles/edit_cache.dir
+/Users/Mark/Projects/spirit/llvm/CMakeFiles/rebuild_cache.dir
+/Users/Mark/Projects/spirit/llvm/CMakeFiles/catch.dir

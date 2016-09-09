@@ -4,12 +4,28 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_DIFFERENCE_FEBRUARY_11_2007_1250PM)
-#define SPIRIT_DIFFERENCE_FEBRUARY_11_2007_1250PM
+#pragma once
 
 #include <x3/support/traits/attribute_of.hpp>
 #include <x3/support/traits/has_attribute.hpp>
 #include <x3/core/parser.hpp>
+
+namespace x4 {
+
+template <class Left, class Right>
+struct difference_op {
+
+    template <class Range>
+    auto check() const {
+        if (right.check(r)) return false;
+        else return left.check();
+    }
+
+};
+
+}
+
+/*
 
 namespace x3
 {
@@ -55,7 +71,7 @@ namespace x3
     {
         return { as_parser(left), as_parser(right) };
     }
-}}}
+}
 
 namespace x3 { namespace traits
 {
@@ -66,6 +82,7 @@ namespace x3 { namespace traits
     template <typename Left, typename Right, typename Context>
     struct has_attribute<x3::difference<Left, Right>, Context>
         : has_attribute<Left, Context> {};
-}}}}
+}}
 
 #endif
+*/

@@ -10,24 +10,13 @@
 #include <x3/core/parser.hpp>
 #include <x3/operator/detail/alternative.hpp>
 
+/*
 namespace x3 {
     template <typename Left, typename Right>
     struct alternative : binary_parser<Left, Right, alternative<Left, Right>> {
         typedef binary_parser<Left, Right, alternative<Left, Right>> base_type;
 
         alternative(Left const& left, Right const& right) : base_type(left, right) {}
-
-        template <class Range>
-        auto check(Range &r) {
-            optional<data_type> ret;
-            if (!check_set(ret, this->left)) check_set(ret, this->right);
-            return ret;
-        }
-
-        value_type parse(data_type data) {
-            if (data[0_c]) return this->left.parse(std::move(data[0_c]));
-            else return this->left.parse(std::move(data[1_c]));
-        }
 
         template <typename Iterator, typename Context, typename RContext>
         bool parse(Iterator& first, Iterator const& last , Context const& context, RContext& rcontext, unused_type) const {
@@ -53,3 +42,4 @@ namespace x3 { namespace traits
     struct attribute_of<x3::alternative<Left, Right>, Context>
         : x3::detail::attribute_of_alternative<Left, Right, Context> {};
 }}
+*/

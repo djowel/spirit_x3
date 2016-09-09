@@ -1,0 +1,214 @@
+The system is: Darwin - 15.6.0 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/local/opt/llvm/bin/clang 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is Clang, found in "/Users/Mark/Projects/spirit/llvm/CMakeFiles/3.6.1/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/local/opt/llvm/bin/clang++ 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is Clang, found in "/Users/Mark/Projects/spirit/llvm/CMakeFiles/3.6.1/CompilerIdCXX/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /Users/Mark/Projects/spirit/llvm/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/ninja" "cmTC_daeb5"
+[1/2] Building C object CMakeFiles/cmTC_daeb5.dir/testCCompiler.c.o
+[2/2] Linking C executable cmTC_daeb5
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /Users/Mark/Projects/spirit/llvm/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/ninja" "cmTC_f2a16"
+[1/2] Building C object CMakeFiles/cmTC_f2a16.dir/CMakeCCompilerABI.c.o
+[2/2] Linking C executable cmTC_f2a16
+clang version 3.8.1 (tags/RELEASE_381/final)
+Target: x86_64-apple-darwin15.6.0
+Thread model: posix
+InstalledDir: /usr/local/opt/llvm/bin
+ "/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.11.0 -o cmTC_f2a16 -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_f2a16.dir/CMakeCCompilerABI.c.o -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -lSystem /usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a
+@(#)PROGRAM:ld  PROJECT:ld64-253.3
+configured to support archs: armv6 armv7 armv7s arm64 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em
+Library search paths:
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib
+	/usr/lib
+	/usr/local/lib
+Framework search paths:
+	/Library/Frameworks/
+	/System/Library/Frameworks/
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/Mark/Projects/spirit/llvm/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/local/bin/ninja" "cmTC_f2a16"]
+  ignore line: [[1/2] Building C object CMakeFiles/cmTC_f2a16.dir/CMakeCCompilerABI.c.o]
+  ignore line: [[2/2] Linking C executable cmTC_f2a16]
+  ignore line: [clang version 3.8.1 (tags/RELEASE_381/final)]
+  ignore line: [Target: x86_64-apple-darwin15.6.0]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/local/opt/llvm/bin]
+  link line: [ "/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.11.0 -o cmTC_f2a16 -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_f2a16.dir/CMakeCCompilerABI.c.o -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -lSystem /usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+    arg [/usr/bin/ld] ==> ignore
+    arg [-demangle] ==> ignore
+    arg [-dynamic] ==> ignore
+    arg [-arch] ==> ignore
+    arg [x86_64] ==> ignore
+    arg [-macosx_version_min] ==> ignore
+    arg [10.11.0] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_f2a16] ==> ignore
+    arg [-search_paths_first] ==> ignore
+    arg [-headerpad_max_install_names] ==> ignore
+    arg [-v] ==> ignore
+    arg [CMakeFiles/cmTC_f2a16.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib]
+    arg [-lSystem] ==> lib [System]
+    arg [/usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a] ==> lib [/usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+  Library search paths: [;/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib;/usr/lib;/usr/local/lib]
+  Framework search paths: [;/Library/Frameworks/;/System/Library/Frameworks/]
+  remove lib [System]
+  collapse lib [/usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a] ==> [/usr/local/Cellar/llvm/3.8.1/lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  collapse library dir [/usr/local/lib] ==> [/usr/local/lib]
+  collapse framework dir [/Library/Frameworks/] ==> [/Library/Frameworks]
+  collapse framework dir [/System/Library/Frameworks/] ==> [/System/Library/Frameworks]
+  implicit libs: [/usr/local/Cellar/llvm/3.8.1/lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+  implicit dirs: [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib;/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib;/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib;/usr/lib;/usr/local/lib]
+  implicit fwks: [/Library/Frameworks;/System/Library/Frameworks]
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /Users/Mark/Projects/spirit/llvm/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/ninja" "cmTC_f7b39"
+[1/2] Building CXX object CMakeFiles/cmTC_f7b39.dir/testCXXCompiler.cxx.o
+[2/2] Linking CXX executable cmTC_f7b39
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /Users/Mark/Projects/spirit/llvm/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/local/bin/ninja" "cmTC_5660d"
+[1/2] Building CXX object CMakeFiles/cmTC_5660d.dir/CMakeCXXCompilerABI.cpp.o
+[2/2] Linking CXX executable cmTC_5660d
+clang version 3.8.1 (tags/RELEASE_381/final)
+Target: x86_64-apple-darwin15.6.0
+Thread model: posix
+InstalledDir: /usr/local/opt/llvm/bin
+ "/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.11.0 -o cmTC_5660d -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_5660d.dir/CMakeCXXCompilerABI.cpp.o -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -lc++ -lSystem /usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a
+@(#)PROGRAM:ld  PROJECT:ld64-253.3
+configured to support archs: armv6 armv7 armv7s arm64 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em
+Library search paths:
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib
+	/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib
+	/usr/lib
+	/usr/local/lib
+Framework search paths:
+	/Library/Frameworks/
+	/System/Library/Frameworks/
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /Users/Mark/Projects/spirit/llvm/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/local/bin/ninja" "cmTC_5660d"]
+  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_5660d.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [[2/2] Linking CXX executable cmTC_5660d]
+  ignore line: [clang version 3.8.1 (tags/RELEASE_381/final)]
+  ignore line: [Target: x86_64-apple-darwin15.6.0]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/local/opt/llvm/bin]
+  link line: [ "/usr/bin/ld" -demangle -dynamic -arch x86_64 -macosx_version_min 10.11.0 -o cmTC_5660d -search_paths_first -headerpad_max_install_names -v CMakeFiles/cmTC_5660d.dir/CMakeCXXCompilerABI.cpp.o -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib -L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib -lc++ -lSystem /usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+    arg [/usr/bin/ld] ==> ignore
+    arg [-demangle] ==> ignore
+    arg [-dynamic] ==> ignore
+    arg [-arch] ==> ignore
+    arg [x86_64] ==> ignore
+    arg [-macosx_version_min] ==> ignore
+    arg [10.11.0] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_5660d] ==> ignore
+    arg [-search_paths_first] ==> ignore
+    arg [-headerpad_max_install_names] ==> ignore
+    arg [-v] ==> ignore
+    arg [CMakeFiles/cmTC_5660d.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib]
+    arg [-L/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib]
+    arg [-lc++] ==> lib [c++]
+    arg [-lSystem] ==> lib [System]
+    arg [/usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a] ==> lib [/usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+  Library search paths: [;/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib;/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib;/usr/lib;/usr/local/lib]
+  Framework search paths: [;/Library/Frameworks/;/System/Library/Frameworks/]
+  remove lib [System]
+  collapse lib [/usr/local/Cellar/llvm/3.8.1/bin/../lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a] ==> [/usr/local/Cellar/llvm/3.8.1/lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/tbb/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/compiler/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib]
+  collapse library dir [/opt/intel//compilers_and_libraries_2016.0.083/mac/mkl/lib] ==> [/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  collapse library dir [/usr/local/lib] ==> [/usr/local/lib]
+  collapse framework dir [/Library/Frameworks/] ==> [/Library/Frameworks]
+  collapse framework dir [/System/Library/Frameworks/] ==> [/System/Library/Frameworks]
+  implicit libs: [c++;/usr/local/Cellar/llvm/3.8.1/lib/clang/3.8.1/lib/darwin/libclang_rt.osx.a]
+  implicit dirs: [/opt/intel/compilers_and_libraries_2016.0.083/mac/tbb/lib;/opt/intel/compilers_and_libraries_2016.0.083/mac/compiler/lib;/opt/intel/compilers_and_libraries_2016.0.083/mac/mkl/lib;/usr/lib;/usr/local/lib]
+  implicit fwks: [/Library/Frameworks;/System/Library/Frameworks]
+
+
