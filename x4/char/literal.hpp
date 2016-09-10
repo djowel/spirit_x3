@@ -7,7 +7,11 @@ struct literal {
     T t;
 
     template <class Window>
-    bool check(Window w) {return *w == t;}
+    Window check(Window w) {
+        if (*w == t) w.fail();
+        else ++w;
+        return window;
+    }
 };
 
 }
