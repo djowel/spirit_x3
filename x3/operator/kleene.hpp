@@ -12,23 +12,6 @@
 #include <x3/support/traits/attribute_of.hpp>
 #include <x3/core/detail/parse_into_container.hpp>
 
-namespace x4 {
-
-template <class Subject>
-struct kleene {
-    Subject subject;
-
-    template <class Range>
-    auto check(Range r) const {
-        while (detail::parse_into_container(this->subject, r)) ;
-        return true;        
-    }
-};
-
-}
-
-/*
-
 namespace x3
 {
     template <typename Subject>
@@ -68,4 +51,3 @@ namespace x3 { namespace traits
             typename attribute_of<Subject, Context>::type> {};
 }}
 
-*/

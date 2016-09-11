@@ -1,0 +1,17 @@
+apple*/*
+llvm*/*
+templight*/*
+intel*/*
+gcc*/*
+xcode/*
+build*/*
+debug*/*
+output.cc
+save-commands.json
+.idea
+.tags
+.DS_Store
+__pycache__/
+*.sublime-project
+*.sublime-workspace
+Dockerfile

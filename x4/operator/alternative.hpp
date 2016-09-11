@@ -1,20 +1,56 @@
 #pragma once
+#include "../parse/variant.hpp"
+#include "../parse/parse.hpp"
+#include <boost/hana/for_each.hpp>
 
 namespace x4 {
 
-template <class Left, class Right>
-struct alternative_op {
-    template <class Range>
-    auto check(Range &r) {
-        optional<data_type> ret;
-        if (!check_set(ret, this->left)) check_set(ret, this->right);
+/******************************************************************************************/
+
+template <class V, class=void>
+struct reduce_variant {
+    template <class I, class T>
+    constexpr auto operator()(I i, T &&t) const {return V(i, std::forward<T>(t));}
+};
+
+template <class T, class ...Ts>
+struct reduce_variant<variant<T, Ts...>, std::enable_if_t<decltype(hana::tuple_t<T, Ts...> == hana::tuple_t<Ts..., T>)::value>> {
+    template <class I, class T_>
+    auto operator()(I, T_ &&t) const {return std::forward<T_>(t);}
+};
+
+/******************************************************************************************/
+
+template <class ...Parsers>
+struct alternative : expression_base {
+    hana::tuple<Parsers...> parsers;
+
+    template <class ...Ts>
+    constexpr alternative(Ts &&...ts) : parsers(std::forward<Ts>(ts)...) {}
+
+    template <class Window>
+    auto check(Window &w) const {
+        decltype(*optional_variant_c(hana::transform(parsers, check_type(w)))) ret;
+        hana::for_each(enumerate(parsers), [&](auto const &p) {
+            if (!ret) if (auto t = check_of(p[1_c], w)) ret.emplace(p[0_c], std::move(t));
+        });
         return ret;
     }
 
-    value_type parse(data_type data) {
-        if (data[0_c]) return this->left.parse(std::move(data[0_c]));
-        else return this->left.parse(std::move(data[1_c]));
+    template <class Data, class ...Args>
+    auto parse(Data &&data, Args &&...args) const {
+        using R = decltype(*variant_c(hana::transform(parsers, parse_type(data, std::forward<Args>(args)...))));
+        return data.visit([&](auto i, auto &d) {
+            return reduce_variant<R>()(i, parse_of(parsers[i], std::move(d), std::forward<Args>(args)...));
+        });
     }
 };
+
+static constexpr auto alternative_c = hana::template_<alternative>;
+
+/******************************************************************************************/
+
+template <class L, class R, int_if<is_expression<L> || is_expression<R>> = 0>
+constexpr auto operator|(L const &l, R const &r) {return alternative<L, R>(l, r);}
 
 }
