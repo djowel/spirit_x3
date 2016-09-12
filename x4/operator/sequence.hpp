@@ -45,6 +45,25 @@ constexpr auto operator>>(L const &l, R const &r) {return sequence<L, R>(l, r);}
 
 /******************************************************************************************/
 
+template <class Index, class Parser, class Data>
+struct sequence_caller {
+    Index index;
+    Parser parser;
+    Data data;
+
+    template <class ...Ts>
+    auto operator()(Ts &&...ts) const & {return parse_of(parser, data, std::forward<Ts>(ts)...);}
+
+    template <class ...Ts>
+    auto operator()(Ts &&...ts) && {return parse_of(parser, std::move(data), std::forward<Ts>(ts)...);}
+
+    template <class T>
+    operator T() const & {return parse_of(parser, data);}
+
+    template <class T>
+    operator T() && {return parse_of(parser, std::move(data));}
+};
+
 template <class ...Parsers>
 struct visit_expression<sequence<Parsers...>, void> {
     template <class ...Args>
@@ -59,8 +78,8 @@ struct visit_expression<sequence<Parsers...>, void> {
     auto operator()(sequence<Parsers...> const &s, Operation const &op, Data &&data, Args &&...args) {
         return helper<Args...>()(std::make_index_sequence<sizeof...(Parsers)>(),
             hana::transform(indices_c<sizeof...(Parsers)>, [&](auto i) {
-                return [&, i](auto &&...ts) {return parse_of(s.parsers[i], (*data)[i], std::forward<decltype(ts)>(ts)...);};
-        }), op, std::forward<Args>(args)...);
+                return sequence_caller<decltype(i), decltype(s.parsers[i]), std::decay_t<decltype((*data)[i])>>{i, s.parsers[i], std::move((*data)[i])};
+            }), op, std::forward<Args>(args)...);
     }
 };
 

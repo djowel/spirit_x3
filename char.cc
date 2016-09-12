@@ -80,12 +80,14 @@ TEST_CASE("7") {
     std::cout << success_of(z, check_of(z, w)) << std::endl;
 }
 
+
 TEST_CASE("8") {
     constexpr auto x = 'a'_x;
     constexpr auto y = 'b'_x;
-    auto z = (x >> y) % [](auto x, auto y) {
+
+    auto z = (x >> y) % [](auto x, char y) {
         REQUIRE(x() == 'a');
-        REQUIRE(y() == 'b');
+        REQUIRE(y == 'b');
         return 5.5;
     };
 
