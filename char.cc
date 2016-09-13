@@ -1,23 +1,5 @@
 #include "catch.hpp"
-#include "x4/parse/declare.hpp"
-#include "x4/directive/lexeme.hpp"
-#include "x4/string/char_set.hpp"
-#include "x4/string/char_predicate.hpp"
-#include "x4/numeric/int.hpp"
-#include "x4/operator/list.hpp"
-#include "x4/operator/restriction.hpp"
-#include "x4/operator/optional.hpp"
-#include "x4/operator/kleene.hpp"
-#include "x4/operator/plus.hpp"
-#include "x4/operator/alternative.hpp"
-#include "x4/parse/parse.hpp"
-#include "x4/window/window.hpp"
-#include "x4/string/literal_char.hpp"
-#include "x4/string/literal_string.hpp"
-#include "x4/operator/sequence.hpp"
-#include "x4/operator/transform.hpp"
-#include "x4/parse/variant.hpp"
-#include "x4/string/window_predicate.hpp"
+#include "x4.hpp"
 #include <iostream>
 
 namespace x4 {
@@ -119,10 +101,14 @@ TEST_CASE("9") {
     dump(p[0_c], p[1_c], p[2_c]);
 
     auto x = ("foo"_x >> '_'_x >> "bar"_x) % [] (auto t, char u, auto v) {
-        dump(t(), u, v());
+        dump("x", t(), u, v());
     };
+    parser(x)(s);
 
-    parser(x, s);
+    auto y = ("foo" >> '_'_x >> "bar") % simplify % [] (auto t, auto u, auto v) {
+        dump("y", t, u, v);
+    };
+    parser(y)(s);
 }
 
 TEST_CASE("10") {

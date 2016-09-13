@@ -22,7 +22,7 @@ struct transform : expression_base {
 
     template <class Data, class ...Args>
     auto parse(Data &&data, Args &&...args) const {
-        return no_void*(visit_expression<Subject>()(subject, operation, data, std::forward<Args>(args)...), no_void);
+        return no_void[visit_expression<Subject>()(subject, operation, data, std::forward<Args>(args)...), no_void];
     }
 };
 

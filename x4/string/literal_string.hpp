@@ -9,8 +9,13 @@ namespace x4 {
 template <class String>
 class literal_string : expression_base {
 
-    using string = std::conditional_t<!std::is_pointer<String>::value, String,
-        detail::string_wrap<std::remove_cv_t<std::remove_pointer_t<String>>>>;
+    using string = std::conditional_t<std::is_pointer<String>::value,
+        detail::string_wrap<std::remove_cv_t<std::remove_pointer_t<String>>>,
+        std::conditional_t<std::is_array<String>::value,
+            detail::array_wrap<std::remove_cv_t<std::remove_extent_t<String>>, std::extent<String>::value>,
+            String
+        >
+    >;
 
     string str;
 
@@ -49,22 +54,30 @@ constexpr auto operator""_x(wchar_t const *c, std::size_t n) {return literal_str
 
 /******************************************************************************************/
 
-template <class T, int_if<is_character<T>> = 0>
-auto expression(T const *t) {
-    auto i = t;
-    for (; *i != static_cast<T>(0); ++i) {}
-    return literal_string<T const *>(detail::string_wrap<T>(t, i - t));
-}
+template <class T>
+struct expr_t<T, void_if<(std::is_pointer<T>::value && is_character<std::remove_cv_t<std::remove_pointer_t<T>>>)>> {
+    constexpr auto operator()(std::remove_pointer_t<T> const *t) const {
+        auto i = t;
+        for (; *i != static_cast<T>(0); ++i) {}
+        return literal_string<T const *>(detail::string_wrap<T>(t, i - t));
+    }
+};
+
+template <class T, std::size_t N>
+struct expr_t<T[N], void_if<(is_character<std::remove_cv_t<T>>)>> {
+    constexpr auto operator()(T const (&t)[N]) const {return literal_string<T const[N]>(detail::array_wrap<T, N>(t));}
+};
 
 /******************************************************************************************/
 
-template <class ...Ts>
-constexpr auto expression(std::basic_string<Ts...> const &s) {
-    return literal_string<std::basic_string<Ts...>>(s);
-}
+template <class T, class=void> struct is_string_t : std::false_type {};
+template <class ...Ts> struct is_string_t<std::basic_string<Ts...>, void> : std::true_type {};
+template <class T> static constexpr auto is_string = hana::bool_c<is_string_t<T>::value>;
 
-template <class T, std::size_t N, int_if<is_character<T>> = 0>
-constexpr auto expression(T const t[N]) {return literal_string<T const [N]>(std::move(t));}
+template <class T>
+struct expr_t<T, void_if<(is_string<T>)>> {
+    constexpr auto operator()(T t) const {return literal_string<T>(std::move(t));}
+};
 
 /******************************************************************************************/
 

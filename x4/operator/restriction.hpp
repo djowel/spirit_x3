@@ -3,6 +3,8 @@
 #include "../parse/variant.hpp"
 #include "../parse/common.hpp"
 
+#include <boost/hana/none_of.hpp>
+
 namespace x4 {
 
 /******************************************************************************************/

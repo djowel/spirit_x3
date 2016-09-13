@@ -1,5 +1,5 @@
 #pragma once
-#include "../window/window.hpp"
+#include "window.hpp"
 
 #include <boost/hana/type.hpp>
 #include <boost/hana/functional/overload_linearly.hpp>
@@ -16,7 +16,7 @@ struct implementation {static_assert(P::has_an_implementation, "No implementatio
 
 template <class P, class Window>
 constexpr auto check_of(P const &p, Window &w) {
-    return no_void*(implementation<P>().check(p, w), no_void);
+    return no_void[implementation<P>().check(p, w), no_void];
 }
 
 template <class P, class Data>
@@ -24,7 +24,7 @@ constexpr auto success_of(P const &p, Data const &data) {return implementation<P
 
 template <class P, class ...Ts>
 constexpr auto parse_of(P const &p, Ts &&...ts) {
-    return no_void*(implementation<P>().parse(p, std::forward<Ts>(ts)...), no_void);
+    return no_void[implementation<P>().parse(p, std::forward<Ts>(ts)...), no_void];
 }
 
 /******************************************************************************************/
@@ -81,7 +81,7 @@ constexpr auto parser(Subject subject, Masks ...masks) {
 template <class Subject, class=void>
 struct visit_expression {
     template <class Data, class Operation, class ...Args>
-    auto operator()(Subject const &s, Operation const &op, Data &&data, Args &&...args) {
+    auto operator()(Subject const &s, Operation const &op, Data &&data, Args &&...args) const {
         auto f = [&](auto &&...ts) {return parse_of(s, data, std::forward<decltype(ts)>(ts)...);};
         return op(f, std::forward<Args>(args)...);
     }

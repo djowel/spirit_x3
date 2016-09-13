@@ -35,6 +35,17 @@ public:
     constexpr auto size() const {return m_size;}
 };
 
+template <class T, std::size_t N>
+class array_wrap {
+    T const * const data;
+public:
+    constexpr array_wrap(T const *t) : data(t) {}
+
+    constexpr auto begin() const {return data;}
+    constexpr auto end() const {return data + N;}
+    constexpr auto size() const {return hana::size_c<N - 1>;}
+};
+
 /******************************************************************************************/
 
 }

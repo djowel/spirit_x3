@@ -26,7 +26,7 @@ struct optional_op {
 
 }
 
-/*
+
 
 namespace x3
 {
@@ -92,4 +92,4 @@ namespace x3 { namespace traits
             typename attribute_of<Subject, Context>::type> {};
 }}
 
-*/
+

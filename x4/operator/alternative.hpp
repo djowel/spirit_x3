@@ -65,13 +65,13 @@ template <class T> constexpr auto make_alternative(T &&t) {
 /******************************************************************************************/
 
 template <class L, class R, int_if<(is_expression<L> || is_expression<R>) && !(is_alternative<L> || is_alternative<R>)> = 0>
-constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::make_tuple(expression(l), expression(r)));}
+constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::make_tuple(expr(l), expr(r)));}
 
 template <class L, class R, int_if<is_alternative<L> && !is_alternative<R>> = 0>
-constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::append(l.parsers, expression(r)));}
+constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::append(l.parsers, expr(r)));}
 
 template <class L, class R, int_if<!is_alternative<L> && is_alternative<R>> = 0>
-constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::prepend(r.parsers, expression(l)));}
+constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::prepend(r.parsers, expr(l)));}
 
 template <class L, class R, int_if<is_alternative<L> && is_alternative<R>> = 0>
 constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::concat(l.parsers, r.parsers));}

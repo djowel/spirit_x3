@@ -29,11 +29,11 @@ template<class ...Ts> using void_t = typename detail::make_void<Ts...>::type;
 /******************************************************************************************/
 
 struct no_void_t {
-    constexpr decltype(auto) operator*(no_void_t) const {return hana::nothing;}
+    constexpr auto operator[](no_void_t) const {return hana::nothing;}
     template <class T>
-    constexpr decltype(auto) operator*(T &&t) const {return std::forward<T>(t);}
+    constexpr T && operator[](T &&t) const {return std::forward<T>(t);}
     template <class T>
-    constexpr friend decltype(auto) operator,(T &&t, no_void_t) {return std::forward<T>(t);}
+    constexpr friend T && operator,(T &&t, no_void_t) {return std::forward<T>(t);}
 };
 
 static constexpr auto no_void = no_void_t();
@@ -53,6 +53,9 @@ constexpr auto enumerate(T &&t) {
 
 /******************************************************************************************/
 
+template <class T> using optional_type = boost::optional<T>;
+static constexpr auto optional_c = hana::template_<boost::optional>;
+
 static constexpr auto tuple_c = hana::fuse(hana::template_<hana::tuple>);
 static constexpr auto container_c = hana::template_<std::vector>;
 
@@ -68,8 +71,18 @@ struct is_expression_t<T, std::enable_if_t<std::is_base_of<expression_base, T>::
 
 template <class T> static constexpr auto is_expression = hana::bool_c<is_expression_t<T>::value>;
 
-template <class T, int_if<is_expression<std::decay_t<T>>> = 0>
-constexpr decltype(auto) expression(T &&t) {return std::forward<T>(t);}
+template <class T, class=void>
+struct expr_t;
+
+template <class T>
+struct expr_t<T, void_if<is_expression<T>>> {
+    template <class T_>
+    constexpr T_ && operator()(T_ &&t) const {return std::forward<T_>(t);}
+};
+
+template <class T> constexpr decltype(auto) expr(T &&t) {
+    return expr_t<std::remove_cv_t<std::remove_reference_t<T>>>()(std::forward<T>(t));
+}
 
 /******************************************************************************************/
 

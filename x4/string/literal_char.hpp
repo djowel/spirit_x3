@@ -27,7 +27,10 @@ constexpr auto operator""_x(char16_t c) {return literal<char16_t>(c);}
 constexpr auto operator""_x(char32_t c) {return literal<char32_t>(c);}
 constexpr auto operator""_x(wchar_t c) {return literal<wchar_t>(c);}
 
-template <class T, int_if<(is_character<T>)> = 0>
-constexpr auto expression(T t) {return literal<T>(std::move(t));}
+template <class T>
+struct expr_t<T, void_if<(is_character<T>)>> {
+    template <class T_>
+    constexpr auto operator()(T_ &&t) const {return literal<T>(std::forward(t));}
+};
 
 }
