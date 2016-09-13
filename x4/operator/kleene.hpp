@@ -1,20 +1,26 @@
 #pragma once
+#include "../parse/parse.hpp"
+#include "../parse/common.hpp"
 
 namespace x4 {
 
 /******************************************************************************************/
 
+// replace vector<void> with size_t probably
+
 template <class Subject>
-struct kleene : expression_base {
+class kleene : expression_base {
     Subject subject;
+
+public:
+
+    constexpr kleene(Subject s) : subject(std::move(s)) {}
 
     template <class Window>
     auto check(Window &w) const {
-        decltype(*container(check_type(w)(subject))) ret;
-        while (true) {
-            ret.emplace_back(subject.check(w));
-            if (!ret.back()) break;
-        }
+        container_type<decltype(*check_type(w)(subject))> ret;
+        append(ret, check_of(subject, w));
+        while (success_of(subject, ret.back())) append(ret, check_of(subject, w));
         ret.pop_back();
         return ret;
     }
@@ -24,9 +30,9 @@ struct kleene : expression_base {
 
     template <class Data, class ...Args>
     auto parse(Data data, Args &&...args) const {
-        decltype(*container(parse_type(data.front(), args...)(subject))) ret;
+        container_type<decltype(parse_of(subject, std::move(data.front()), args...))> ret;
         ret.reserve(data.size());
-        for (auto &&d : data) ret.emplace_back(parse_of(subject, std::move(d), args...));
+        for (auto &&d : data) append(ret, parse_of(subject, std::move(d), args...));
         return ret;
     }
 };
@@ -38,6 +44,6 @@ static constexpr auto kleene_c = hana::template_<kleene>;
 /******************************************************************************************/
 
 template <class Subject, int_if<is_expression<Subject>> = 0>
-constexpr auto operator*(Subject const &s) {return kleene<Subject>{s};}
+constexpr auto operator*(Subject const &s) {return kleene<Subject>(s);}
 
 }

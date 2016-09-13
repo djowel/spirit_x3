@@ -21,6 +21,13 @@ struct index_wrapper {
 
 static constexpr auto index_wrap = hana::fuse(hana::template_<index_wrapper>);
 
+template <class T, class=void> struct is_recursive : std::true_type {};
+
+template <class T> struct recursive_t {
+    using type = std::conditional_t<!is_recursive<T>::value || std::is_empty<T>::value || std::is_pod<T>::value, T, boost::recursive_wrapper<T>>;
+};
+static constexpr auto recursive_c = hana::metafunction<recursive_t>;
+
 /******************************************************************************************/
 
 template <class ...Types>
@@ -38,7 +45,7 @@ protected:
     }
 
 public:
-    using data_type = decltype(*hana::unpack(items, hana::template_<boost::variant>));
+    using data_type = decltype(*hana::unpack(hana::transform(items, recursive_c), hana::template_<boost::variant>));
 
     data_type data;
 
@@ -72,8 +79,8 @@ static constexpr auto variant_c = hana::fuse(hana::template_<variant>);
 /******************************************************************************************/
 
 template <class ...Types>
-class optional_variant : public variant<boost::blank, Types...> {
-    using base = variant<boost::blank, Types...>;
+class optional_variant : public variant<decltype(*nothing_c), Types...> {
+    using base = variant<decltype(*nothing_c), Types...>;
 public:
     optional_variant() : base(0_c) {}
 
@@ -93,9 +100,25 @@ public:
     template <class F> constexpr auto visit(F &&f) {
         return base::visit_(1_c, base::which(), [&](auto i) {return std::forward<F>(f)(i-1_c, (*this)[i-1_c]);});
     }
+
+    void reset() {base::emplace(0_c, hana::nothing);}
+
+    template <class T, bool B=true, int_if<B && sizeof...(Types) == 1> = 0>
+    auto & operator=(T &&t) {emplace(0_c, std::forward<T>(t)); return *this;}
+
+    template <bool B=true, int_if<B && sizeof...(Types) == 1> = 0>
+    auto & operator*() {return (*this)[0_c];}
+
+    template <bool B=true, int_if<B && sizeof...(Types) == 1> = 0>
+    auto const & operator*() const {return (*this)[0_c];}
 };
 
 static constexpr auto optional_variant_c = hana::fuse(hana::template_<optional_variant>);
+
+/******************************************************************************************/
+
+template <class T> using optional_type = optional_variant<T>;
+static constexpr auto optional_c = hana::template_<optional_variant>;
 
 /******************************************************************************************/
 

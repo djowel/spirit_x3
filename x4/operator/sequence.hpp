@@ -1,7 +1,9 @@
 #pragma once
 #include "../parse/parse.hpp"
 #include "../parse/common.hpp"
+
 #include <boost/hana/back.hpp>
+#include <boost/hana/append.hpp>
 
 namespace x4 {
 
@@ -11,8 +13,7 @@ template <class ...Parsers>
 struct sequence : expression_base {
     hana::tuple<Parsers...> parsers;
 
-    template <class ...Ts>
-    constexpr sequence(Ts &&...ts) : parsers(std::forward<Ts>(ts)...) {}
+    constexpr sequence(hana::tuple<Parsers...> tuple) : parsers(std::move(tuple)) {}
 
     template <class Window>
     auto check(Window &w) const {
@@ -36,12 +37,30 @@ struct sequence : expression_base {
     }
 };
 
-static constexpr auto sequence_c = hana::template_<sequence>;
+static constexpr auto sequence_c = hana::fuse(hana::template_<sequence>);
+
+template <class T> constexpr auto make_sequence(T tuple) {
+    return decltype(*sequence_c(types_in(tuple)))(std::move(tuple));
+}
+
+template <class T, class=void> struct is_sequence_t : std::false_type {};
+template <class ...Parsers> struct is_sequence_t<sequence<Parsers...>, void> : std::true_type {};
+
+template <class T> static constexpr auto is_sequence = hana::bool_c<is_sequence_t<T>::value>;
 
 /******************************************************************************************/
 
-template <class L, class R, int_if<is_expression<L> || is_expression<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return sequence<L, R>(l, r);}
+template <class L, class R, int_if<(is_expression<L> || is_expression<R>) && !(is_sequence<L> || is_sequence<R>)> = 0>
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::make_tuple(expression(l), expression(r)));}
+
+template <class L, class R, int_if<is_sequence<L> && !is_sequence<R>> = 0>
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::append(l.parsers, expression(r)));}
+
+template <class L, class R, int_if<!is_sequence<L> && is_sequence<R>> = 0>
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::prepend(expression(l), r.parsers));}
+
+template <class L, class R, int_if<is_sequence<L> && is_sequence<R>> = 0>
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::concat(l.parsers, r.parsers));}
 
 /******************************************************************************************/
 
@@ -57,10 +76,9 @@ struct sequence_caller {
     template <class ...Ts>
     auto operator()(Ts &&...ts) && {return parse_of(parser, std::move(data), std::forward<Ts>(ts)...);}
 
-    template <class T>
+    template <class T, int_if<(std::is_convertible<decltype(parse_of(parser, data)), T>::value)> = 0>
     operator T() const & {return parse_of(parser, data);}
-
-    template <class T>
+    template <class T, int_if<(std::is_convertible<decltype(parse_of(parser, std::move(data))), T>::value)> = 0>
     operator T() && {return parse_of(parser, std::move(data));}
 };
 
