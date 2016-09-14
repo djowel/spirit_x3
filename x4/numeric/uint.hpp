@@ -24,7 +24,7 @@ constexpr auto make_array(From const &f, std::index_sequence<Is...>) {
 template <class T, class R>
 constexpr auto radix_mask(R radix) {
     constexpr auto is = hana::reverse(indices_c<std::numeric_limits<T>::digits10 - 2>);
-    constexpr auto ts = hana::transform(is, hana::partial(hana::power, radix));
+    constexpr auto ts = is | hana::partial(hana::power, radix);
     return make_array<T>(ts, std::make_index_sequence<decltype(hana::length(ts))::value>());
 }
 

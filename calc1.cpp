@@ -24,6 +24,7 @@
 
 namespace client
 {
+
     ///////////////////////////////////////////////////////////////////////////////
     //  The calculator grammar
     ///////////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,7 @@ namespace client
 
         //X4_DEFINE(term) = factor >> *('*' >> factor);
 
-        X4_DEFINE(factor) = x4::uint_x ;//| ('+' >> factor);//
+        X4_DEFINE(factor) = ('+' >> factor) | x4::uint_x;//
                         //  | '(' >> expression >> ')'
                          // | ('+' >> factor);
 
@@ -60,8 +61,6 @@ int main() {
     std::cout << "/////////////////////////////////////////////////////////\n\n";
     std::cout << "Type an expression...or [q or Q] to quit\n\n";
 
-    typedef std::string::const_iterator iterator_type;
-
     std::string str;
     while (std::getline(std::cin, str))
     {
@@ -71,6 +70,7 @@ int main() {
         auto& calc = client::calculator;    // Our grammar
 
         bool r = parser(client::calculator, ' '_x).check(str);
+        
 
         if (r) {
             std::cout << "-------------------------\n";

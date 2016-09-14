@@ -21,22 +21,38 @@ struct reduce_variant<variant<T, Ts...>, std::enable_if_t<false && decltype(hana
 
 /******************************************************************************************/
 
-// need to replace voids in variant with nothing, then it should be OK
+template <class P, class W>
+struct alt_check {
+    using value_type = decltype(std::declval<P const &>().check(std::declval<W &>()));
+    value_type value;
+
+    template <class ...Ts>
+    alt_check(Ts &&...ts) : value(std::forward<Ts>(ts)...) {}
+};
+
+/******************************************************************************************/
 
 template <class ...Parsers>
 struct alternative : parser_base {
     hana::tuple<Parsers...> parsers;
+    static constexpr auto types = hana::tuple_t<Parsers...>;
 
     template <class ...Ts>
     constexpr alternative(Ts &&...ts) : parsers(std::forward<Ts>(ts)...) {}
 
+
+    template <class W>
+    auto check_t(W &w) const {
+        return hana::type_c<optional_variant<alt_check<Parsers, W>...>>;
+    }
+
     template <class Window>
-    auto check(Window &w) const {
-        decltype(*optional_variant_c(hana::transform(parsers, check_type(w)))) ret;
+    auto check(Window &w) const -> decltype(*check_t(w)) {
+        decltype(*check_t(w)) ret;
         hana::for_each(enumerate(parsers), [&](auto const &p) {
-            if (ret) return;
-            auto t = check_of(p[1_c], w);
-            if (success_of(p[1_c], t)) ret.emplace(p[0_c], std::move(t));
+             if (ret) return;
+             auto t = check_of(p[1_c], w);
+             if (success_of(p[1_c], t)) ret.emplace(p[0_c], std::move(t));
         });
         return ret;
     }
@@ -44,10 +60,10 @@ struct alternative : parser_base {
     template <class Data, class ...Args>
     auto parse(Data &&data, Args &&...args) const {
         auto const f = [&](auto i) {return hana::decltype_(parse_of(parsers[i], std::move(data[i]), std::forward<Args>(args)...));};
-        using R = decltype(*variant_c(hana::transform(indices_c<sizeof...(Parsers)>, f)));
+        using R = decltype(*variant_c(indices_c<sizeof...(Parsers)> | f));
 
         return data.visit([&](auto i, auto &d) {
-            return reduce_variant<R>()(i, parse_of(parsers[i], std::move(d), std::forward<Args>(args)...));
+            return reduce_variant<R>()(i, parse_of(parsers[i], std::move(d.value), std::forward<Args>(args)...));
         });
     }
 };

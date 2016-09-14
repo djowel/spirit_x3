@@ -20,6 +20,8 @@ public:
     template <class ...Args, int_if<std::is_constructible<T, Args &&...>::value> = 0>
     constexpr explicit index_wrapper(Args &&...args) : value{std::forward<Args>(args)...} {}
 
+    using value_type = T;
+
     T & operator*() {return value;}
     T const & operator*() const {return value;}
 };
@@ -31,30 +33,37 @@ struct is_complete_helper {
     template <class U>
     static auto test(U*)  -> std::integral_constant<bool, sizeof(U) == sizeof(U)>;
     static auto test(...) -> std::false_type;
-    using type = decltype(test((T*)0));
+    using type = decltype(test((T*) nullptr));
 };
 
 template <class T>
-static constexpr auto is_complete = hana::false_c;//hana::bool_c<is_complete_helper<T>::type::value>;
+static constexpr auto is_complete = false;// is_complete_helper<T>::type::value;
+
+/******************************************************************************************/
 
 static constexpr auto index_wrap = hana::fuse(hana::template_<index_wrapper>);
 
-template <class T, class=void> struct is_recursive : std::true_type {};
-
-template <class T> struct recursive_t {
-    using type = std::conditional_t<!is_recursive<T>::value || is_complete<T>, T, boost::recursive_wrapper<T>>;
+template <class I, class T> struct recursive_t {    
+    using type = std::conditional_t<
+        is_complete<T>, 
+        index_wrapper<I, T>, 
+        boost::recursive_wrapper<index_wrapper<I, T>>
+    >;
 };
 
-// ||
-
-static constexpr auto recursive_c = hana::metafunction<recursive_t>;
+static constexpr auto recursive_c = hana::fuse(hana::metafunction<recursive_t>);
 
 /******************************************************************************************/
 
 template <class ...Types>
 class variant {
+public:
+
+    static constexpr auto types = hana::tuple_t<Types...>;
+
 protected:
-    static constexpr auto items = hana::transform(enumerate(hana::tuple_t<Types...>), index_wrap);
+    static constexpr auto items = hana::transform(enumerate(types), index_wrap);
+    static constexpr auto rtypes = hana::transform(enumerate(types), recursive_c);
 
     template <class I, class F, int_if<I::value + 1 == sizeof...(Types)> = 0>
     constexpr auto visit_(I i, std::size_t n, F &&f) const {return std::forward<F>(f)(i);}
@@ -66,7 +75,7 @@ protected:
     }
 
 public:
-    using data_type = decltype(*hana::unpack(hana::transform(items, recursive_c), hana::template_<boost::variant>));
+    using data_type = decltype(*hana::unpack(rtypes, hana::template_<boost::variant>));
 
     data_type data;
 
