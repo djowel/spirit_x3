@@ -51,16 +51,16 @@ template <class T> static constexpr auto is_sequence = hana::bool_c<is_sequence_
 /******************************************************************************************/
 
 template <class L, class R, int_if<(is_expression<L> || is_expression<R>) && !(is_sequence<L> || is_sequence<R>)> = 0>
-constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::make_tuple(expr(l), expr(r)));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::make_tuple(expr(l), expr(r)));}
 
 template <class L, class R, int_if<is_sequence<L> && !is_sequence<R>> = 0>
-constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::append(l.parsers, expr(r)));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::append(l.parsers, expr(r)));}
 
 template <class L, class R, int_if<!is_sequence<L> && is_sequence<R>> = 0>
-constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::prepend(r.parsers, expr(l)));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::prepend(r.parsers, expr(l)));}
 
 template <class L, class R, int_if<is_sequence<L> && is_sequence<R>> = 0>
-constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::concat(l.parsers, r.parsers));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::concat(l.parsers, r.parsers));}
 
 template <class ...Ts>
 constexpr auto seq(Ts &&...ts) {return make_sequence(hana::make_tuple(expr(std::forward<Ts>(ts))...));}

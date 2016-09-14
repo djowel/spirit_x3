@@ -5,6 +5,14 @@
 namespace x4 {
 using namespace literals;
 
+template <class F>
+auto debug(F f) {
+    auto r = no_void[f(), no_void];
+    std::cout << "called debug" << std::endl;
+    return r;
+}
+
+
 template <class T, class ...Ts>
 void dump(T const &t, Ts const &...ts) {
     std::cout << std::boolalpha << t;
@@ -13,6 +21,12 @@ void dump(T const &t, Ts const &...ts) {
 }
 
 TEST_CASE("1") {
+    auto int_function = []{return 1;}; // will be OK
+    auto void_function = []{}; // will be Error, assigned to void
+
+    int i = debug(int_function);
+    auto j = debug(void_function);
+
     std::string s = "aaa";
     auto w = make_window(s);
     constexpr auto x = 'a'_x;
@@ -151,6 +165,15 @@ TEST_CASE("14") {
     std::string s = "98765     5674";
     auto p = parser(rule(), ' '_x)(s);
     dump(p[0_c], p[1_c]);
+}
+
+struct blah {
+    std::vector<int> goo;
+    optional_variant<blah> next;
+};
+
+TEST_CASE("15") {
+    blah m_bah;
 }
 
 

@@ -37,5 +37,7 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CATCH_FILES test.cc char.cc)
+set(CATCH_FILES test.cc char.cpp)
 add_executable(catch ${CATCH_FILES})
+
+add_executable(calculate calc1.cpp)

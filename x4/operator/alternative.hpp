@@ -79,7 +79,7 @@ constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::
 /******************************************************************************************/
 
 template <class ...Ts>
-constexpr auto any(Ts &&...ts) {return make_alternative(hana::make_tuple(std::forward<Ts>(ts)...));}
+constexpr auto any(Ts &&...ts) {return make_alternative(hana::make_tuple(expr(std::forward<Ts>(ts))...));}
 
 /******************************************************************************************/
 

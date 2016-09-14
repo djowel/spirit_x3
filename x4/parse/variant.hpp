@@ -14,18 +14,39 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Index, class T>
-struct index_wrapper {
-    template <class ...Args> index_wrapper(Args &&...args) : value(std::forward<Args>(args)...) {}
+class index_wrapper {
     T value;
+public:
+    template <class ...Args, int_if<std::is_constructible<T, Args &&...>::value> = 0>
+    constexpr explicit index_wrapper(Args &&...args) : value{std::forward<Args>(args)...} {}
+
+    T & operator*() {return value;}
+    T const & operator*() const {return value;}
 };
+
+/******************************************************************************************/
+
+template <class T>
+struct is_complete_helper {
+    template <class U>
+    static auto test(U*)  -> std::integral_constant<bool, sizeof(U) == sizeof(U)>;
+    static auto test(...) -> std::false_type;
+    using type = decltype(test((T*)0));
+};
+
+template <class T>
+static constexpr auto is_complete = hana::false_c;//hana::bool_c<is_complete_helper<T>::type::value>;
 
 static constexpr auto index_wrap = hana::fuse(hana::template_<index_wrapper>);
 
 template <class T, class=void> struct is_recursive : std::true_type {};
 
 template <class T> struct recursive_t {
-    using type = std::conditional_t<!is_recursive<T>::value || std::is_empty<T>::value || std::is_pod<T>::value, T, boost::recursive_wrapper<T>>;
+    using type = std::conditional_t<!is_recursive<T>::value || is_complete<T>, T, boost::recursive_wrapper<T>>;
 };
+
+// ||
+
 static constexpr auto recursive_c = hana::metafunction<recursive_t>;
 
 /******************************************************************************************/
@@ -55,10 +76,10 @@ public:
     auto which() const {return data.which();}
 
     template <class I>
-    auto & operator[](I i) {return boost::get<decltype(*items[i])>(data).value;}
+    auto & operator[](I i) {return *boost::get<decltype(*items[i])>(data);}
 
     template <class I>
-    auto const & operator[](I i) const {return boost::get<decltype(*items[i])>(data).value;}
+    auto const & operator[](I i) const {return *boost::get<decltype(*items[i])>(data);}
 
     template <class I, class ...Ts>
     void emplace(I i, Ts &&...ts) {data = decltype(*items[i])(std::forward<Ts>(ts)...);}

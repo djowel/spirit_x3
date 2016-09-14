@@ -62,8 +62,15 @@ public:
 
     constexpr explicit parser_t(Subject s, Masks ...ms) : subject(std::move(s)), masks(std::move(ms)...) {}
 
+    template <class V>
+    constexpr auto check(V const &v) const {
+        auto window = with_masks(make_window(v), masks);
+        auto data = check_of(subject, window);
+        return success_of(subject, data);
+    }
+
     template <class V, class ...Ts>
-    constexpr decltype(auto) operator()(V const &v, Ts &&...ts) {
+    constexpr decltype(auto) operator()(V const &v, Ts &&...ts) const {
         auto window = with_masks(make_window(v), masks);
         auto data = check_of(subject, window);
         if (!success_of(subject, data)) throw std::runtime_error("parsing failed");
