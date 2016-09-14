@@ -44,6 +44,7 @@ public:
     void set_end(Iterator e) {m_end = std::move(e);}
 
     decltype(auto) operator++() {++m_begin; return *this;}
+
     auto operator++(int) {return m_begin++;}
     decltype(auto) operator*() const {return *m_begin;}
 
@@ -73,7 +74,7 @@ public:
     constexpr decltype(auto) masks() const {return masks;}
 
     template <class ...Ts>
-    constexpr window(window<Iterator, Compare> w, Ts &&...ts) : window<Iterator, Compare>(std::move(w)), m_masks(std::forward<Ts>(ts)...) {}
+    constexpr window(window<Iterator, Compare> w, Ts &&...ts) : window<Iterator, Compare>(std::move(w)), m_masks(std::forward<Ts>(ts)...) {skip();}
 
     template <class F> auto no_skip(F &&f) {
         auto ret = f(this->base());
@@ -82,6 +83,7 @@ public:
     }
 
     auto & operator++() {++this->base(); skip(); return *this;}
+    auto operator++(int) {auto ret = this->begin(); ++(*this); return ret;}
 };
 
 static constexpr auto window_c = hana::fuse(hana::template_<window>);
@@ -97,7 +99,7 @@ auto with_mask(window<Iterator, Compare, Masks...> const &w, Mask &&m) {
 
 template <class Iterator, class Compare, class Mask, class ...Masks>
 auto with_masks(window<Iterator, Compare, Masks...> const &w, Mask &&m) {
-    using R = decltype(*window_c(hana::insert_range(w.types(), 2_c, types_in(m))));
+    using R = decltype(*window_c(hana::insert_range(w.types(), 2_c, types_of(m))));
     return R(w, hana::concat(std::forward<Mask>(m), w.masks()));
 }
 
@@ -105,7 +107,7 @@ auto with_masks(window<Iterator, Compare, Masks...> const &w, Mask &&m) {
 template <class Iterator, class Compare, class Predicate, class ...Masks>
 auto without_mask(window<Iterator, Compare, Masks...> const &w, Predicate rm) {
     auto masks = hana::remove_if(w.masks(), std::forward<Predicate>(rm));
-    using R = decltype(*window_c(hana::concat(hana::tuple_t<Iterator, Compare>, types_in(masks))));
+    using R = decltype(*window_c(hana::concat(hana::tuple_t<Iterator, Compare>, types_of(masks))));
     return R(w, std::move(masks));
 }
 

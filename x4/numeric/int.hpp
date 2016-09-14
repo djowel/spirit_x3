@@ -6,7 +6,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class T, unsigned Radix = 10>
-struct int_parser : expression_base {
+struct int_parser : parser_base {
     template <class Window>
     auto check(Window &w) const {
         return w.no_skip([](auto &w) {

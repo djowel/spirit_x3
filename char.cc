@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace x4 {
+using namespace literals;
 
 template <class T, class ...Ts>
 void dump(T const &t, Ts const &...ts) {
@@ -34,7 +35,7 @@ TEST_CASE("3") {
     std::string s = "aaa";
     constexpr auto x = 'a'_x;
     constexpr auto y = 'a'_x;
-    constexpr auto z = x >> y;
+    constexpr auto z = seq(x, y);
     auto result = parser(z)(s);
     dump(result[0_c], result[1_c]);
 }
@@ -73,7 +74,7 @@ TEST_CASE("6") {
 TEST_CASE("7") {
     constexpr auto x = 'a'_x;
     constexpr auto y = 'b'_x;
-    constexpr auto z = x >> y;
+    constexpr auto z = seq(x, y);
 
     std::string s = "abc";
     auto w = make_window(s);
@@ -84,7 +85,7 @@ TEST_CASE("8") {
     constexpr auto x = 'a'_x;
     constexpr auto y = 'b'_x;
 
-    auto z = (x >> y) % [](auto x, char y) {
+    auto z = seq(x, y) % [](auto x, char y) {
         REQUIRE(x() == 'a');
         REQUIRE(y == 'b');
         return 5.5;
@@ -97,15 +98,15 @@ TEST_CASE("8") {
 TEST_CASE("9") {
     std::string s = "foo_bar";
     dump(parser("foo_bar"_x)(s));
-    auto p = parser("foo"_x >> '_'_x >> "bar"_x)(s);
+    auto p = parser(seq("foo"_x, '_'_x, "bar"_x))(s);
     dump(p[0_c], p[1_c], p[2_c]);
 
-    auto x = ("foo"_x >> '_'_x >> "bar"_x) % [] (auto t, char u, auto v) {
+    auto x = seq("foo"_x, '_'_x, "bar"_x) % [] (auto t, char u, auto v) {
         dump("x", t(), u, v());
     };
     parser(x)(s);
 
-    auto y = ("foo" >> '_'_x >> "bar") % simplify % [] (auto t, auto u, auto v) {
+    auto y = seq("foo", '_'_x, "bar") % simplify % [] (auto t, auto u, auto v) {
         dump("y", t, u, v);
     };
     parser(y)(s);
@@ -138,13 +139,13 @@ TEST_CASE("12") {
 
 TEST_CASE("13") {
     std::string s = "98765     5674";
-    auto x = size_x >> size_x;
+    auto x = seq(size_x, size_x);
     auto p = parser(x, ' '_x)(s);
     dump(p[0_c], p[1_c]);
 }
 
 struct rule {};
-constexpr auto implement(rule) {return size_x >> size_x;}
+constexpr auto implement(rule) {return seq(size_x, size_x);}
 
 TEST_CASE("14") {
     std::string s = "98765     5674";

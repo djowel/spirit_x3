@@ -8,7 +8,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Subject, class Operation>
-struct transform : expression_base {
+struct transform : parser_base {
     Subject subject;
     Operation operation;
 

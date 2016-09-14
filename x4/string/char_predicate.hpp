@@ -6,7 +6,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Predicate>
-class char_predicate : expression_base {
+class char_predicate : parser_base {
     Predicate predicate;
 
 public:
@@ -18,12 +18,14 @@ public:
 
     template <class Window>
     auto check(Window &w) const {
-        if (w && predicate(*w)) return *(w++);
+        if (bool(w) && predicate(*w)) return *(w++);
         else return static_cast<std::decay_t<decltype(*w)>>(0);
     }
 
     template <class T> constexpr auto parse(T const &t) const {return t;}
 };
+
+static constexpr auto char_predicate_c = hana::template_<char_predicate>;
 
 /******************************************************************************************/
 
@@ -55,6 +57,8 @@ public:
 
 #undef X4_CHAR_PREDICATE
 #undef X4_CHAR_FUNCTOR
+
+static constexpr auto char_x = decltype(*char_predicate_c(type_of(always_true)))(always_true);
 
 /******************************************************************************************/
 

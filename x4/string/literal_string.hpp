@@ -7,7 +7,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class String>
-class literal_string : expression_base {
+class literal_string : parser_base {
 
     using string = std::conditional_t<std::is_pointer<String>::value,
         detail::string_wrap<std::remove_cv_t<std::remove_pointer_t<String>>>,
@@ -47,19 +47,22 @@ public:
 
 /******************************************************************************************/
 
-constexpr auto operator""_x(char const *c, std::size_t n) {return literal_string<char const *>(detail::string_wrap<char>(c, n));}
-constexpr auto operator""_x(char16_t const *c, std::size_t n) {return literal_string<char16_t const *>(detail::string_wrap<char16_t>(c, n));}
-constexpr auto operator""_x(char32_t const *c, std::size_t n) {return literal_string<char32_t const *>(detail::string_wrap<char32_t>(c, n));}
-constexpr auto operator""_x(wchar_t const *c, std::size_t n) {return literal_string<wchar_t const *>(detail::string_wrap<wchar_t>(c, n));}
+namespace literals {
+    constexpr auto operator""_x(char const *c, std::size_t n) {return literal_string<char const *>(detail::string_wrap<char>(c, n));}
+    constexpr auto operator""_x(char16_t const *c, std::size_t n) {return literal_string<char16_t const *>(detail::string_wrap<char16_t>(c, n));}
+    constexpr auto operator""_x(char32_t const *c, std::size_t n) {return literal_string<char32_t const *>(detail::string_wrap<char32_t>(c, n));}
+    constexpr auto operator""_x(wchar_t const *c, std::size_t n) {return literal_string<wchar_t const *>(detail::string_wrap<wchar_t>(c, n));}
+}
 
 /******************************************************************************************/
 
 template <class T>
 struct expr_t<T, void_if<(std::is_pointer<T>::value && is_character<std::remove_cv_t<std::remove_pointer_t<T>>>)>> {
-    constexpr auto operator()(std::remove_pointer_t<T> const *t) const {
+    using char_type = std::remove_cv_t<std::remove_pointer_t<T>>;
+    constexpr auto operator()(char_type const *t) const {
         auto i = t;
-        for (; *i != static_cast<T>(0); ++i) {}
-        return literal_string<T const *>(detail::string_wrap<T>(t, i - t));
+        for (; *i != static_cast<char_type>(0); ++i) {}
+        return literal_string<char_type const *>(detail::string_wrap<char_type>(t, i - t));
     }
 };
 

@@ -10,7 +10,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class ...Parsers>
-struct sequence : expression_base {
+struct sequence : parser_base {
     hana::tuple<Parsers...> parsers;
 
     constexpr sequence(hana::tuple<Parsers...> tuple) : parsers(std::move(tuple)) {}
@@ -40,7 +40,7 @@ struct sequence : expression_base {
 static constexpr auto sequence_c = hana::fuse(hana::template_<sequence>);
 
 template <class T> constexpr auto make_sequence(T tuple) {
-    return decltype(*sequence_c(types_in(tuple)))(std::move(tuple));
+    return decltype(*sequence_c(types_of(tuple)))(std::move(tuple));
 }
 
 template <class T, class=void> struct is_sequence_t : std::false_type {};
@@ -51,16 +51,19 @@ template <class T> static constexpr auto is_sequence = hana::bool_c<is_sequence_
 /******************************************************************************************/
 
 template <class L, class R, int_if<(is_expression<L> || is_expression<R>) && !(is_sequence<L> || is_sequence<R>)> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::make_tuple(expr(l), expr(r)));}
+constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::make_tuple(expr(l), expr(r)));}
 
 template <class L, class R, int_if<is_sequence<L> && !is_sequence<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::append(l.parsers, expr(r)));}
+constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::append(l.parsers, expr(r)));}
 
 template <class L, class R, int_if<!is_sequence<L> && is_sequence<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::prepend(expr(l), r.parsers));}
+constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::prepend(r.parsers, expr(l)));}
 
 template <class L, class R, int_if<is_sequence<L> && is_sequence<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::concat(l.parsers, r.parsers));}
+constexpr auto operator,(L const &l, R const &r) {static_assert(R::aaaa, ""); return make_sequence(hana::concat(l.parsers, r.parsers));}
+
+template <class ...Ts>
+constexpr auto seq(Ts &&...ts) {return make_sequence(hana::make_tuple(expr(std::forward<Ts>(ts))...));}
 
 /******************************************************************************************/
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../parse/common.hpp"
+#include "../operator/sequence.hpp"
 
 namespace x4 {
 
@@ -7,7 +7,7 @@ namespace x4 {
 
 struct lexeme_t {
     template <class Subject>
-    class expression : expression_base {
+    class expression : parser_base {
         Subject subject;
 
     public:
@@ -28,8 +28,11 @@ struct lexeme_t {
 
     constexpr lexeme_t() {}
 
-    template <class Subject>
-    constexpr auto operator[](Subject &&s) {return expression<std::decay_t<Subject>>(std::forward<Subject>(s));}
+    template <class ...Ts, int_if<sizeof...(Ts) >= 2> = 0>
+    constexpr auto operator()(Ts &&...ts) const {return expression<decltype(seq(std::forward<Ts>(ts)...))>(seq(std::forward<Ts>(ts)...));}
+
+    template <class T>
+    constexpr auto operator()(T &&t) const {return expression<std::decay_t<decltype(expr(std::forward<T>(t)))>>(expr(std::forward<T>(t)));}
 };
 
 static constexpr auto lexeme = lexeme_t();

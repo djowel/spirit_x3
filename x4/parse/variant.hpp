@@ -31,7 +31,7 @@ static constexpr auto recursive_c = hana::metafunction<recursive_t>;
 /******************************************************************************************/
 
 template <class ...Types>
-class variant : expression_base {
+class variant {
 protected:
     static constexpr auto items = hana::transform(enumerate(hana::tuple_t<Types...>), index_wrap);
 

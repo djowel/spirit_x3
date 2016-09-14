@@ -5,6 +5,15 @@ namespace x4 {
 
 /******************************************************************************************/
 
+struct declaration : expression_base {constexpr declaration() {}};
+
+template <class T>
+struct declaration_t : expression_base {constexpr declaration_t() {}};
+
+template <class T> static constexpr auto declaration_c = declaration_t<T>();
+
+/******************************************************************************************/
+
 void implement(...);
 
 template <class P, class=void> struct has_adl_impl : std::false_type {};
@@ -42,5 +51,13 @@ struct implementation<P, void_if<has_member_impl<P>::value>> {
 };
 
 /******************************************************************************************/
+
+#define X4_DECLARE(NAME) static auto constexpr NAME = ::x4::declaration_c<class NAME>;
+
+#define X4_DEFINE(NAME) \
+template <class T> struct implementation; \
+template <> struct implementation<std::decay_t<decltype(NAME)>> {template <bool=true> static constexpr bool value = false;}; \
+template <bool B=true> constexpr auto implement(std::decay_t<decltype(NAME)>) {return implementation<std::decay_t<decltype(NAME)>>::value<B>;} \
+template <> auto const implementation<std::decay_t<decltype(NAME)>>::value<>
 
 }

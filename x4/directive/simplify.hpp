@@ -6,7 +6,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Subject>
-struct simplified_t : expression_base {
+struct simplified_t : parser_base {
     Subject subject;
 
     constexpr simplified_t(Subject s) : subject(std::move(s)) {}

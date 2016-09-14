@@ -8,9 +8,11 @@
 #include <boost/hana/range.hpp>
 #include <boost/hana/fuse.hpp>
 #include <boost/hana/or.hpp>
+#include <boost/hana/functional/always.hpp>
 #include <boost/hana/functional/overload_linearly.hpp>
 
 #include <vector>
+#include <iostream>
 
 namespace x4 {
 
@@ -40,6 +42,9 @@ static constexpr auto no_void = no_void_t();
 
 /******************************************************************************************/
 
+static constexpr auto always_true = hana::always(hana::true_c);
+static constexpr auto always_false = hana::always(hana::false_c);
+
 template <class T> T operator*(hana::basic_type<T> t);
 static constexpr auto nothing_c = hana::type_c<std::decay_t<decltype(hana::nothing)>>;
 
@@ -62,14 +67,20 @@ static constexpr auto container_c = hana::template_<std::vector>;
 /******************************************************************************************/
 
 struct expression_base {};
-
-template <class T, class=void>
-struct is_expression_t : std::false_type {};
-
-template <class T>
-struct is_expression_t<T, std::enable_if_t<std::is_base_of<expression_base, T>::value>> : std::true_type {};
+template <class T, class=void> struct is_expression_t : std::false_type {};
+template <class T> struct is_expression_t<T, std::enable_if_t<std::is_base_of<expression_base, T>::value>> : std::true_type {};
 
 template <class T> static constexpr auto is_expression = hana::bool_c<is_expression_t<T>::value>;
+
+/******************************************************************************************/
+
+struct parser_base : expression_base {constexpr parser_base() {}};
+template <class T, class=void> struct is_parser_t : std::false_type {};
+template <class T> struct is_parser_t<T, std::enable_if_t<std::is_base_of<parser_base, T>::value>> : std::true_type {};
+
+template <class T> static constexpr auto is_parser = hana::bool_c<is_parser_t<T>::value>;
+
+/******************************************************************************************/
 
 template <class T, class=void>
 struct expr_t;
@@ -89,7 +100,10 @@ template <class T> constexpr decltype(auto) expr(T &&t) {
 static constexpr auto decay = hana::metafunction<std::decay>;
 
 template <class T>
-constexpr auto types_in(T const &t) {return hana::transform(hana::transform(t, hana::decltype_), decay);}
+constexpr auto types_of(T const &t) {return hana::transform(hana::transform(t, hana::decltype_), decay);}
+
+template <class T>
+constexpr auto type_of(T const &t) {return decay(hana::decltype_(t));}
 
 /******************************************************************************************/
 

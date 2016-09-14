@@ -9,18 +9,20 @@ namespace x4 {
 // replace vector<void> with size_t probably
 
 template <class Subject>
-class kleene : expression_base {
-    Subject subject;
+class kleene : parser_base {
+    Subject m_subject;
 
 public:
 
-    constexpr kleene(Subject s) : subject(std::move(s)) {}
+    decltype(auto) subject() const {return m_subject;}
+
+    constexpr kleene(Subject s) : m_subject(std::move(s)) {}
 
     template <class Window>
     auto check(Window &w) const {
-        container_type<decltype(*check_type(w)(subject))> ret;
-        append(ret, check_of(subject, w));
-        while (success_of(subject, ret.back())) append(ret, check_of(subject, w));
+        container_type<decltype(*check_type(w)(subject()))> ret;
+        append(ret, check_of(subject(), w));
+        while (success_of(subject(), ret.back())) append(ret, check_of(subject(), w));
         ret.pop_back();
         return ret;
     }
@@ -30,9 +32,9 @@ public:
 
     template <class Data, class ...Args>
     auto parse(Data data, Args &&...args) const {
-        container_type<decltype(parse_of(subject, std::move(data.front()), args...))> ret;
+        container_type<decltype(parse_of(subject(), std::move(data.front()), args...))> ret;
         ret.reserve(data.size());
-        for (auto &&d : data) append(ret, parse_of(subject, std::move(d), args...));
+        for (auto &&d : data) append(ret, parse_of(subject(), std::move(d), args...));
         return ret;
     }
 };

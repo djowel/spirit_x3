@@ -74,7 +74,7 @@ auto digit_range(Window &w, N n) {
 /******************************************************************************************/
 
 template <class T, unsigned Radix = 10>
-struct uint_parser : expression_base {
+struct uint_parser : parser_base {
     template <class Window>
     auto check(Window &w) const {
         return w.no_skip([](auto &w) {

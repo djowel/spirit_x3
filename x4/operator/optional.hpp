@@ -6,7 +6,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Subject>
-class optional : expression_base {
+class optional : parser_base {
     Subject subject;
 
 public:

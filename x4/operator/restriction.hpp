@@ -10,7 +10,7 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Subject, class ...Fails>
-struct restriction : expression_base {
+struct restriction : parser_base {
     Subject subject;
     hana::tuple<Fails...> fails;
 
@@ -20,7 +20,7 @@ struct restriction : expression_base {
     template <class Window>
     auto check(Window &w) const {
         auto w_mod = w;
-        constexpr auto ok = hana::none_of(fails, [&](auto const &f) {return success_of(check_of(f, w_mod));});
+        auto ok = hana::none_of(fails, [&](auto const &f) {return success_of(f, check_of(f, w_mod));});
         optional_type<decltype(*check_type(w)(subject))> ret;
         if (!ok) return ret;
         ret.emplace(check_of(subject, w));
@@ -44,17 +44,17 @@ struct is_restriction<restriction<Subject, Fails...>> : std::true_type {};
 
 template <class S, class T>
 auto make_restriction(S &&s, T &&t) {
-    return decltype(*restriction_c(types_in(hana::prepend(t, s))))(std::forward<S>(s), std::forward<T>(t));
+    return decltype(*restriction_c(types_of(hana::prepend(t, s))))(std::forward<S>(s), std::forward<T>(t));
 }
 
 /******************************************************************************************/
 
 template <class Subject, class Fail, int_if<(is_expression<Subject> || is_expression<Fail>) && !is_restriction<Subject>::value> = 0>
-constexpr auto operator-(Subject const &s, Fail const &f) {return restriction<Subject, Fail>(expression(s), hana::make_tuple(expression(f)));}
+constexpr auto operator-(Subject const &s, Fail const &f) {return restriction<Subject, Fail>(expr(s), hana::make_tuple(expr(f)));}
 
 template <class Subject, class Fail, class ...Fails>
 constexpr auto operator-(restriction<Subject, Fails...> const &r, Fail const &f) {
-    return restriction<Subject, Fails..., Fail>(r.subject, hana::append(r.fails, expression(f)));
+    return restriction<Subject, Fails..., Fail>(r.subject, hana::append(r.fails, expr(f)));
 }
 
 /******************************************************************************************/

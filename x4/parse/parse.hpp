@@ -30,7 +30,7 @@ constexpr auto parse_of(P const &p, Ts &&...ts) {
 /******************************************************************************************/
 
 template <class T>
-struct implementation<T, void_if<is_expression<T>>> {
+struct implementation<T, void_if<is_parser<T>>> {
     template <class Parser, class Window>
     constexpr auto check(Parser const &parser, Window &w) const {return parser.check(w); }
 

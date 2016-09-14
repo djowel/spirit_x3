@@ -4,7 +4,7 @@
 namespace x4 {
 
 template <class T>
-class literal : expression_base {
+class literal : parser_base {
     T m_value;
 
 public:
@@ -22,15 +22,16 @@ public:
     constexpr auto parse(T const &t) const {return t;}
 };
 
-constexpr auto operator""_x(char c) {return literal<char>(c);}
-constexpr auto operator""_x(char16_t c) {return literal<char16_t>(c);}
-constexpr auto operator""_x(char32_t c) {return literal<char32_t>(c);}
-constexpr auto operator""_x(wchar_t c) {return literal<wchar_t>(c);}
+namespace literals {
+    constexpr auto operator""_x(char c) {return literal<char>(c);}
+    constexpr auto operator""_x(char16_t c) {return literal<char16_t>(c);}
+    constexpr auto operator""_x(char32_t c) {return literal<char32_t>(c);}
+    constexpr auto operator""_x(wchar_t c) {return literal<wchar_t>(c);}
+}
 
 template <class T>
 struct expr_t<T, void_if<(is_character<T>)>> {
-    template <class T_>
-    constexpr auto operator()(T_ &&t) const {return literal<T>(std::forward(t));}
+    constexpr auto operator()(T t) const {return literal<T>(std::move(t));}
 };
 
 }

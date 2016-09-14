@@ -24,7 +24,7 @@ struct reduce_variant<variant<T, Ts...>, std::enable_if_t<false && decltype(hana
 // need to replace voids in variant with nothing, then it should be OK
 
 template <class ...Parsers>
-struct alternative : expression_base {
+struct alternative : parser_base {
     hana::tuple<Parsers...> parsers;
 
     template <class ...Ts>
@@ -59,7 +59,7 @@ template <class ...Parsers> struct is_alternative_t<alternative<Parsers...>> : s
 template <class T> static constexpr auto is_alternative = hana::bool_c<is_alternative_t<T>::value>;
 
 template <class T> constexpr auto make_alternative(T &&t) {
-    return decltype(*alternative_c(types_in(t)))(std::forward<T>(t));
+    return decltype(*alternative_c(types_of(t)))(std::forward<T>(t));
 }
 
 /******************************************************************************************/
@@ -75,6 +75,11 @@ constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::
 
 template <class L, class R, int_if<is_alternative<L> && is_alternative<R>> = 0>
 constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::concat(l.parsers, r.parsers));}
+
+/******************************************************************************************/
+
+template <class ...Ts>
+constexpr auto any(Ts &&...ts) {return make_alternative(hana::make_tuple(std::forward<Ts>(ts)...));}
 
 /******************************************************************************************/
 

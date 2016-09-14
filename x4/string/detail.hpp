@@ -22,10 +22,11 @@ template <> struct is_character_t<wchar_t, void> : public std::true_type {};
 
 /******************************************************************************************/
 
+// Null terminated character pointer
 template <class T>
 class string_wrap {
-    T const * const data;
-    std::size_t const m_size;
+    T const * data;
+    std::size_t m_size;
 public:
     template<std::size_t N> constexpr string_wrap(const T(&t)[N]) : data(t), m_size(N-1) {}
     constexpr string_wrap(T const *t, std::size_t n) : data(t), m_size(n) {}
@@ -35,15 +36,16 @@ public:
     constexpr auto size() const {return m_size;}
 };
 
+// Null terminated character array of length N (actual string is length N-1)
 template <class T, std::size_t N>
 class array_wrap {
     T const * const data;
 public:
     constexpr array_wrap(T const *t) : data(t) {}
 
-    constexpr auto begin() const {return data;}
-    constexpr auto end() const {return data + N;}
     constexpr auto size() const {return hana::size_c<N - 1>;}
+    constexpr auto begin() const {return data;}
+    constexpr auto end() const {return data + (N - 1);}
 };
 
 /******************************************************************************************/
