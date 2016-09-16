@@ -26,10 +26,10 @@ TEST_CASE("1") {
     std::string s = "aaa";
     auto w = make_window(s);
     constexpr auto x = 'a'_x;
-    REQUIRE(x.check(w));
-    REQUIRE(x.check(w));
-    REQUIRE(x.check(w));
-    REQUIRE(!x.check(w));
+    REQUIRE(check(check_c, x, w));
+    REQUIRE(check(check_c, x, w));
+    REQUIRE(check(check_c, x, w));
+    REQUIRE(!check(check_c, x, w));
 }
 
 TEST_CASE("2") {
@@ -73,12 +73,12 @@ TEST_CASE("6") {
 
     std::string s = "abbc";
     auto w = make_window(s);
-    REQUIRE(bool(check_of(z, w)));
-    REQUIRE(bool(check_of(z, w)));
+    REQUIRE(bool(check(check_c, z, w)));
+    REQUIRE(bool(check(check_c, z, w)));
 
-    auto result = parse_of(z, check_of(z, w));
+    auto result = parse(parse_c, z, check(check_c, z, w));
     REQUIRE(result[1_c] == 'b');
-    REQUIRE(!bool(check_of(z, w)));
+    REQUIRE(!bool(check(check_c, z, w)));
 }
 
 TEST_CASE("7") {
@@ -88,7 +88,7 @@ TEST_CASE("7") {
 
     std::string s = "abc";
     auto w = make_window(s);
-    dump(success_of(z, check_of(z, w)));
+    dump(valid(z, check(z, w)));
 }
 
 TEST_CASE("8") {
@@ -127,6 +127,7 @@ TEST_CASE("10") {
     REQUIRE(parser(*'a'_x)(s) == s);
     REQUIRE(parser(+'a'_x)(s) == s);
     REQUIRE(parser(*'b'_x)(s) == "");
+    std::cout << parser(+'b'_x).match(s) << std::endl;
     REQUIRE_THROWS(parser(+'b'_x)(s));
     REQUIRE(parser(*('a'_x % [](auto s){}))(s).size() == 7);
 }

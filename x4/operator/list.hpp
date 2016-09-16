@@ -17,12 +17,12 @@ public:
 
     constexpr list(Subject sub, Separator sep) : plus<Subject>(std::move(sub)), separator(std::move(sep)) {}
 
-    template <class Window>
-    auto check(Window &w) const {
-        container_type<decltype(*check_type(w)(subject()))> ret;
-        append(ret, check_of(subject(), w));
-        while (success_of(separator, check_of(separator, w)) && success_of(subject(), ret.back()))
-            append(ret, check_of(subject(), w));
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto check(Tag tag, Window &w) const {
+        container_type<decltype(check(tag, subject(), w))> ret;
+        append(ret, check(tag, subject(), w));
+        while (valid(separator, check(tag, separator, w)) && valid(subject(), ret.back()))
+            append(ret, check(tag, subject(), w));
         ret.pop_back();
         return ret;
     }

@@ -13,16 +13,16 @@ public:
 
     constexpr optional(Subject s) : subject(std::move(s)) {}
 
-    template <class Window>
-    constexpr auto check(Window &w) const {return check_of(subject, w);}
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Window &w) const {return check(tag, subject, w);}
 
     template <class Data>
-    constexpr auto success(Data const &data) const {return hana::true_c;}
+    auto operator()(valid_t, Data const &data) const {return hana::true_c;}
 
-    template <class Data, class ...Args>
-    auto parse(Data &&data, Args &&...args) const {
-        optional_type<decltype(parse_of(subject, std::forward<Data>(data), std::forward<Args>(args)...))> ret;
-        if (success_of(subject, data)) ret = parse_of(subject, std::forward<Data>(data), std::forward<Args>(args)...);
+    template <class Tag, class Data, class ...Args, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Data &&data, Args &&...args) const {
+        optional_type<decltype(parse(subject, std::forward<Data>(data), std::forward<Args>(args)...))> ret;
+        if (valid(subject, data)) ret = parse(tag, subject, std::forward<Data>(data), std::forward<Args>(args)...);
         return ret;
     }
 };

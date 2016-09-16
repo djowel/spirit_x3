@@ -18,23 +18,23 @@ public:
 
     constexpr kleene(Subject s) : m_subject(std::move(s)) {}
 
-    template <class Window>
-    auto check(Window &w) const {
-        container_type<decltype(*check_type(w)(subject()))> ret;
-        append(ret, check_of(subject(), w));
-        while (success_of(subject(), ret.back())) append(ret, check_of(subject(), w));
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Window &w) const {
+        container_type<decltype(check(tag, subject(), w))> ret;
+        append(ret, check(tag, subject(), w));
+        while (valid(subject(), ret.back())) append(ret, check(tag, subject(), w));
         ret.pop_back();
         return ret;
     }
 
     template <class Data>
-    constexpr auto success(Data const &data) const {return hana::true_c;}
+    constexpr auto operator()(valid_t, Data const &data) const {return hana::true_c;}
 
-    template <class Data, class ...Args>
-    auto parse(Data data, Args &&...args) const {
-        container_type<decltype(parse_of(subject(), std::move(data.front()), args...))> ret;
+    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
+    auto operator()(Tag tag, Data data, Args &&...args) const {
+        container_type<decltype(parse(tag, subject(), std::move(data.front()), args...))> ret;
         ret.reserve(data.size());
-        for (auto &&d : data) append(ret, parse_of(subject(), std::move(d), args...));
+        for (auto &&d : data) append(ret, parse(tag, subject(), std::move(d), args...));
         return ret;
     }
 };

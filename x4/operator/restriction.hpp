@@ -16,20 +16,20 @@ struct restriction : parser_base {
     template <class ...Ts>
     constexpr restriction(Subject s, Ts &&...ts) : subject(std::move(s)), fails(std::forward<Ts>(ts)...) {}
 
-    template <class Window>
-    auto check(Window &w) const {
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Window &w) const {
         auto w_mod = w;
-        auto ok = hana::none_of(fails, [&](auto const &f) {return success_of(f, check_of(f, w_mod));});
-        optional_type<decltype(*check_type(w)(subject))> ret;
+        auto ok = hana::none_of(fails, [&](auto const &f) {return valid(f, check(f, w_mod));});
+        optional_type<decltype(check(tag, subject, w))> ret;
         if (!ok) return ret;
-        ret.emplace(check_of(subject, w));
-        if (!success_of(subject, *ret)) ret.reset();
+        ret.emplace(check(tag, subject, w));
+        if (!valid(subject, *ret)) ret.reset();
         return ret;
     }
 
-    template <class Data, class ...Args>
-    auto parse(Data data, Args &&...args) const {
-        return parse_of(subject, std::move(*data), std::forward<Args>(args)...);
+    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
+    decltype(auto) operator()(Tag tag, Data data, Args &&...args) const {
+        return parse(tag, subject, std::move(*data), std::forward<Args>(args)...);
     }
 };
 

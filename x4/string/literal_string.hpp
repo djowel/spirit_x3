@@ -27,7 +27,7 @@ public:
 
     // Return pair(iterator, bool) where bool is the success and iterator is the start of the string
     template <class Window>
-    auto check(Window &w) const {
+    auto operator()(check_base, Window &w) const {
         return w.no_skip([&](auto &w) {
             auto its = std::mismatch(std::begin(str), std::end(str), w.begin(), w.end(), w.compare());
             auto data = std::make_pair(w.begin(), std::move(its.first) == std::end(str));
@@ -37,10 +37,10 @@ public:
     }
 
     template <class Data>
-    constexpr auto success(Data const &data) const {return data.second;}
+    constexpr auto operator()(valid_t, Data const &data) const {return data.second;}
 
     template <class Data>
-    constexpr auto parse(Data const &data) const {
+    constexpr auto operator()(parse_base, Data const &data) const {
         return container_type<char_type>(data.first, std::next(data.first, detail::string_length(str)));
     }
 };
@@ -194,4 +194,3 @@ namespace extension {
 }
 */
 /******************************************************************************************/
-

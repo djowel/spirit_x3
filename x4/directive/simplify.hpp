@@ -9,17 +9,17 @@ template <class Subject>
 struct simplified_t : parser_base {
     Subject subject;
 
-    constexpr simplified_t(Subject s) : subject(std::move(s)) {}
+    explicit constexpr simplified_t(Subject s) : subject(std::move(s)) {}
 
-    template <class Window>
-    auto check(Window &w) const {return check_of(subject, w);}
+    template <class T, class Window, int_if<is_check<T>> = 0>
+    auto operator()(T t, Window &w) const {return check(t, subject, w);}
 
     template <class Data>
-    auto success(Data const &d) const {return success_of(subject, d);}
+    auto operator()(valid_t, Data const &d) const {return valid(subject, d);}
 
-    template <class Data, class ...Args>
-    auto parse(Data &&data, Args &&...args) const {
-        return parse_of(subject, std::forward<Data>(data), std::forward<Args>(args)...);
+    template <class T, class Data, class ...Args, int_if<is_parse<T>> = 0>
+    auto operator()(T t, Data &&data, Args &&...args) const {
+        return parse(subject, std::forward<Data>(data), std::forward<Args>(args)...);
     }
 };
 
@@ -40,7 +40,7 @@ template <class Subject>
 struct visit_expression<simplified_t<Subject>, void_if<!is_sequence<Subject>>> {
     template <class Data, class Operation, class ...Args>
     auto operator()(simplified_t<Subject> const &s, Operation const &op, Data &&data, Args &&...args) const {
-        return op(parse_of(s, std::forward<Data>(data)), std::forward<Args>(args)...);
+        return op(parse(s, std::forward<Data>(data)), std::forward<Args>(args)...);
     }
 };
 
@@ -56,8 +56,8 @@ struct visit_expression<simplified_t<Subject>, void_if<is_sequence<Subject>>> {
 
     template <class Data, class Operation, class ...Args>
     auto operator()(simplified_t<Subject> const &s, Operation const &op, Data &&data, Args &&...args) const {
-        constexpr auto is = std::make_index_sequence<decltype(hana::length(parse_of(s, std::forward<Data>(data))))::value>();
-        return helper<Args...>()(is, parse_of(s, std::forward<Data>(data)), op, std::forward<Args>(args)...);
+        constexpr auto is = std::make_index_sequence<decltype(hana::length(parse(s, std::forward<Data>(data))))::value>();
+        return helper<Args...>()(is, parse(s, std::forward<Data>(data)), op, std::forward<Args>(args)...);
     }
 };
 

@@ -12,17 +12,17 @@ struct lexeme_t {
 
     public:
 
-        constexpr expression(Subject s) : subject(std::move(s)) {}
+        explicit constexpr expression(Subject s) : subject(std::move(s)) {}
 
-        template <class Window>
-        constexpr auto check(Window &w) const {return w.no_skip([&](auto &w) {return check_of(subject, w);});}
+        template <class T, class Window, int_if<is_check<T>> = 0>
+        constexpr auto operator()(T tag, Window &w) const {return w.no_skip([&](auto &w) {return check(tag, subject, w);});}
 
         template <class Data>
-        constexpr auto success(Data const &data) const {return success_of(subject, data);}
+        constexpr auto operator()(valid_t, Data const &data) const {return valid(subject, data);}
 
-        template <class Data, class ...Args>
-        constexpr auto parse(Data data, Args &&...args) const {
-            return parse_of(subject, std::move(data), std::forward<Args>(args)...);
+        template <class T, class Data, class ...Args, int_if<is_parse<T>> = 0>
+        constexpr auto operator()(T tag, Data data, Args &&...args) const {
+            return parse(tag, subject, std::move(data), std::forward<Args>(args)...);
         }
     };
 

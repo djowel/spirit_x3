@@ -1,6 +1,6 @@
 #pragma once
 #include "window.hpp"
-
+#include "../support/counter.hpp"
 #include <boost/hana/type.hpp>
 #include <boost/hana/functional/overload_linearly.hpp>
 
@@ -11,46 +11,49 @@ namespace hana = boost::hana;
 
 /******************************************************************************************/
 
+struct valid_t {};
+
+static constexpr auto check_c = check_map<>();
+static constexpr auto parse_c = parse_map<>();
+static constexpr auto valid_c = valid_t();
+
+/******************************************************************************************/
+
 template <class P, class=void>
 struct implementation {static_assert(P::has_an_implementation, "No implementation found");};
 
-template <class P, class Window>
-constexpr auto check_of(P const &p, Window &w) {
-    return no_void[implementation<P>().check(p, w), no_void];
+template <class Tag, class P, class Window>
+auto check(Tag tag, P const &p, Window &w) {
+    static_assert(is_check<Tag>, "Should be parsing tag");
+    return no_void[implementation<P>()(tag, p, w), no_void];
 }
 
 template <class P, class Data>
-constexpr auto success_of(P const &p, Data const &data) {return implementation<P>().success(p, data);}
+auto valid(P const &p, Data const &data) {return implementation<P>()(valid_c, p, data);}
 
-template <class P, class ...Ts>
-constexpr auto parse_of(P const &p, Ts &&...ts) {
-    return no_void[implementation<P>().parse(p, std::forward<Ts>(ts)...), no_void];
+template <class Tag, class P, class ...Ts>
+auto parse(Tag tag, P const &p, Ts &&...ts) {
+    static_assert(is_parse<Tag>, "Should be parsing tag");
+    return no_void[implementation<P>()(tag, p, std::forward<Ts>(ts)...), no_void];
 }
 
 /******************************************************************************************/
 
 template <class T>
 struct implementation<T, void_if<is_parser<T>>> {
-    template <class Parser, class Window>
-    constexpr auto check(Parser const &parser, Window &w) const {return parser.check(w);}
+    template <class M, class Parser, class Window>
+    auto operator()(check_map<M> map, Parser const &parser, Window &w) const {return parser(map, w);}
 
     template <class Parser, class Data>
-    auto success(Parser const &parser, Data const &data) const {
-        static auto const f1 = [](auto const &p, auto const &d) -> decltype(p.success(d)) {return p.success(d);};
+    auto operator()(valid_t, Parser const &parser, Data const &data) const {
+        static auto const f1 = [](auto const &p, auto const &d) -> decltype(p(valid_c, d)) {return p(valid_c, d);};
         static auto const f2 = [](auto const &, auto const &d) -> decltype(std::enable_if_t<std::is_constructible<bool, decltype(d)>::value, bool>()) {return bool(d);};
         return hana::overload_linearly(f1, f2)(parser, data);
     }
 
-    template <class Parser, class Data, class ...Args>
-    auto parse(Parser const &p, Data &&d, Args &&...args) const {return p.parse(std::forward<Data>(d));}
+    template <class M, class Parser, class Data, class ...Args>
+    auto operator()(parse_map<M> map, Parser const &p, Data &&d, Args &&...args) const {return p(map, std::forward<Data>(d), std::forward<Args>(args)...);}
 };
-
-/******************************************************************************************/
-
-template <class Window>
-auto check_type(Window &) {
-    return [](auto const &parser) {return hana::decltype_(check_of(parser, declref<Window>()));};
-}
 
 /******************************************************************************************/
 
@@ -63,18 +66,18 @@ public:
     constexpr explicit parser_t(Subject s, Masks ...ms) : subject(std::move(s)), masks(std::move(ms)...) {}
 
     template <class V>
-    constexpr auto check(V const &v) const {
+    auto match(V const &v) const {
         auto window = with_masks(make_window(v), masks);
-        auto data = check_of(subject, window);
-        return success_of(subject, data);
+        auto data = check(check_c, subject, window);
+        return valid(subject, data);
     }
 
     template <class V, class ...Ts>
-    constexpr decltype(auto) operator()(V const &v, Ts &&...ts) const {
+    decltype(auto) operator()(V const &v, Ts &&...ts) const {
         auto window = with_masks(make_window(v), masks);
-        auto data = check_of(subject, window);
-        if (!success_of(subject, data)) throw std::runtime_error("parsing failed");
-        return parse_of(subject, std::move(data));
+        auto data = check(check_c, subject, window);
+        if (!valid(subject, data)) throw std::runtime_error("parsing failed");
+        return parse(parse_c, subject, std::move(data));
     }
 };
 
@@ -89,7 +92,7 @@ template <class Subject, class=void>
 struct visit_expression {
     template <class Data, class Operation, class ...Args>
     auto operator()(Subject const &s, Operation const &op, Data &&data, Args &&...args) const {
-        auto f = [&](auto &&...ts) {return parse_of(s, data, std::forward<decltype(ts)>(ts)...);};
+        auto f = [&](auto &&...ts) {return parse(s, data, std::forward<decltype(ts)>(ts)...);};
         return op(f, std::forward<Args>(args)...);
     }
 };

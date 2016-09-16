@@ -6,12 +6,23 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class Subject>
-struct plus : kleene<Subject> {
+class plus : kleene<Subject> {
+    auto const & base() const {return static_cast<kleene<Subject> const &>(*this);}
 
-    template <class ...Ts> plus(Ts &&...ts) : kleene<Subject>(std::forward<Ts>(ts)...) {}
+public:
+
+    template <class ...Ts>
+    explicit constexpr plus(Ts &&...ts) : kleene<Subject>(std::forward<Ts>(ts)...) {}
+
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Window &w) const {return check(tag, base(), w);}
 
     template <class Data>
-    auto success(Data const &data) const {return !data.empty();}
+    auto operator()(valid_t, Data const &data) const {return !data.empty();}
+
+    template <class Tag, class ...Args, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Args &&...args) const {return parse(tag, base(), std::forward<Args>(args)...);}
+
 };
 
 /******************************************************************************************/

@@ -13,13 +13,14 @@ public:
     constexpr T value() const {return m_value;}
 
     template <class Window>
-    T check(Window &w) const {
+    T operator()(check_base, Window &w) const {
         if (w && w.compare()(*w, value())) return *(w++);
         else return static_cast<T>(0);
     }
 
-    constexpr bool success(T const &t) {return bool(t);}
-    constexpr auto parse(T const &t) const {return t;}
+    constexpr bool operator()(valid_t, T t) const {return bool(t);}
+
+    constexpr auto operator()(parse_base, T t) const {return t;}
 };
 
 namespace literals {

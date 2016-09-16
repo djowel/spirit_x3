@@ -26,28 +26,28 @@ template <class P> struct has_member_impl<P, void_if<!(std::is_same<decltype(std
 
 template <class P>
 struct implementation<P, void_if<has_adl_impl<P>::value && !has_member_impl<P>::value>> {
-    template <class Window>
-    constexpr auto check(P const &p, Window &w) const {return check_of(implement(p), w);}
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    constexpr auto operator()(Tag tag, P const &p, Window &w) const {return check(tag, implement(p), w);}
 
     template <class Data>
-    constexpr auto success(P const &p, Data const &data) const {return success_of(implement(p), data);}
+    constexpr auto operator()(valid_t, P const &p, Data const &data) const {return valid(implement(p), data);}
 
-    template <class ...Args>
-    constexpr auto parse(P const &p, Args &&...args) const {return parse_of(implement(p), std::forward<Args>(args)...);}
+    template <class Tag, class ...Args, int_if<is_check<Tag>> = 0>
+    constexpr auto operator()(Tag tag, P const &p, Args &&...args) const {return parse(tag, implement(p), std::forward<Args>(args)...);}
 };
 
 /******************************************************************************************/
 
 template <class P>
 struct implementation<P, void_if<has_member_impl<P>::value>> {
-    template <class Window>
-    constexpr auto check(P const &p, Window &w) const {return check_of(p.implement(), w);}
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    constexpr auto operator()(Tag tag, P const &p, Window &w) const {return check(tag, p.implement(), w);}
 
     template <class Data>
-    constexpr auto success(P const &p, Data const &data) const {return success_of(p.implement(), data);}
+    constexpr auto operator()(valid_t, P const &p, Data const &data) const {return valid(p.implement(), data);}
 
-    template <class ...Args>
-    constexpr auto parse(P const &p, Args &&...args) const {return parse_of(p.implement(), std::forward<Args>(args)...);}
+    template <class Tag, class ...Args, int_if<is_check<Tag>> = 0>
+    constexpr auto operator()(Tag tag, P const &p, Args &&...args) const {return parse(tag, p.implement(), std::forward<Args>(args)...);}
 };
 
 /******************************************************************************************/

@@ -61,7 +61,7 @@ class window : public window<Iterator, Compare> {
         while (true) {
             bool changed = false;
             hana::for_each(m_masks, [&](auto const &m) {
-                while (success_of(m, check_of(m, this->base()))) changed = true;
+                while (valid(m, check(m, this->base()))) changed = true;
             });
             if (sizeof...(Masks) < 2 || !changed) break;
         }

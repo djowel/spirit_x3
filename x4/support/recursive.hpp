@@ -9,7 +9,7 @@ template <class T>
 class recursive_wrap {
     struct deleter {void operator()(T *t) const {boost::checked_delete(t);}};
 
-    std::unique_ptr<T, deleter> ptr;
+    std::shared_ptr<T> ptr;
 public:
     static constexpr bool wraps_recursive_value = true;
 
@@ -18,12 +18,6 @@ public:
 
     template <class ...Ts>
     explicit recursive_wrap(Ts &&...ts) : ptr(new T{std::forward<Ts>(ts)...}) {}
-
-    //template<bool B=true, int_if<B> = 0>
-    recursive_wrap(recursive_wrap const &other) : ptr(new T(*other.ptr)) {}
-
-    //template<bool B=true, int_if<B> = 0>
-    recursive_wrap &operator=(recursive_wrap const &other) {*ptr = *other.ptr; return *this;}
 
     void swap(recursive_wrap &other) {ptr.swap(other.ptr);}
 };

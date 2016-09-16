@@ -15,12 +15,13 @@ public:
     explicit constexpr char_set(Ts &&...ts) : set(std::forward<Ts>(ts)...) {}
 
     template <class Window>
-    auto check(Window &w) const {
+    auto operator()(check_base, Window &w) const {
         if (hana::any_of(set, hana::equal.to(*w))) return *(w++);
         else return static_cast<std::decay_t<decltype(*w)>>(0);
     }
 
-    template <class T> constexpr auto parse(T const &t) const {return t;}
+    template <class T>
+    constexpr auto operator()(parse_base, T t) const {return t;}
 };
 
 struct eol_t : char_set<hana::char_<'\n'>, hana::char_<'\r'>> {constexpr eol_t() {}};

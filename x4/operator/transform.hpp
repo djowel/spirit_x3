@@ -14,15 +14,15 @@ struct transform : parser_base {
 
     transform(Subject s, Operation op) : subject(std::move(s)), operation(std::move(op)) {}
 
-    template <class Window>
-    auto check(Window &w) const {return check_of(subject, w);}
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Window &w) const {return check(tag, subject, w);}
 
     template <class Data>
-    auto success(Data const &d) const {return success_of(subject, d);}
+    auto operator()(valid_t, Data const &d) const {return valid(subject, d);}
 
-    template <class Data, class ...Args>
-    auto parse(Data &&data, Args &&...args) const {
-        return no_void[visit_expression<Subject>()(subject, operation, data, std::forward<Args>(args)...), no_void];
+    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
+    auto operator()(Tag tag, Data &&data, Args &&...args) const {
+        return no_void[visit_expression<Subject>()(tag, subject, operation, data, std::forward<Args>(args)...), no_void];
     }
 };
 

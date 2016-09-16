@@ -14,15 +14,16 @@ public:
     template <bool B=true, int_if<std::is_default_constructible<Predicate>::value> = 0>
     constexpr char_predicate() {}
 
-    constexpr char_predicate(Predicate p) : predicate(std::move(p)) {}
+    explicit constexpr char_predicate(Predicate p) : predicate(std::move(p)) {}
 
     template <class Window>
-    auto check(Window &w) const {
+    auto operator()(check_base, Window &w) const {
         if (bool(w) && predicate(*w)) return *(w++);
         else return static_cast<std::decay_t<decltype(*w)>>(0);
     }
 
-    template <class T> constexpr auto parse(T const &t) const {return t;}
+    template <class T>
+    constexpr auto operator()(parse_base, T t) const {return t;}
 };
 
 static constexpr auto char_predicate_c = hana::template_<char_predicate>;

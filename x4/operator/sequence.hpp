@@ -11,29 +11,37 @@ namespace x4 {
 /******************************************************************************************/
 
 template <class ...Parsers>
-struct sequence : parser_base {
+class sequence : public parser_base {
     hana::tuple<Parsers...> parsers;
+
+    template <class T, class W>
+    auto check_type(T tag, W &w) const {
+        auto f = [&](auto const &p) {return hana::decltype_(check(tag, p, w));};
+        return optional_c(tuple_c(hana::transform(parsers, f)));
+    }
+
+public:
 
     constexpr sequence(hana::tuple<Parsers...> tuple) : parsers(std::move(tuple)) {}
 
-    template <class Window>
-    auto check(Window &w) const {
-        decltype(*optional_c(tuple_c(hana::transform(parsers, check_type(w))))) ret;
+    template <class T, class Window, int_if<is_check<T>> = 0>
+    auto operator()(T tag, Window &w) const {
+        decltype(*check_type(tag, w)) ret;
         bool good = true;
         auto save = w;
         ret = hana::transform(parsers, [&](auto const &p) {
-            decltype(*check_type(w)(p)) t;
-            if (good) good = success_of(p, t = check_of(p, w));
+            decltype(check(tag, p, w)) t;
+            if (good) good = valid(p, t = check(tag, p, w));
             return t;
         });
         if (!good) {ret.reset(); w = save;}
         return ret;
     }
 
-    template <class Data, class ...Args>
-    auto parse(Data &&data, Args &&...args) const {
+    template <class T, class Data, class ...Args, int_if<is_parse<T>> = 0>
+    decltype(auto) operator()(T tag, Data &&data, Args &&...args) const {
         return hana::transform(indices_c<sizeof...(Parsers)>, [&] (auto i) {
-            return parse_of(parsers[i], std::move((*data)[i]), args...);
+            return parse(tag, parsers[i], std::move((*data)[i]), args...);
         });
     }
 };
@@ -75,15 +83,15 @@ struct sequence_caller {
     Data data;
 
     template <class ...Ts>
-    auto operator()(Ts &&...ts) const & {return parse_of(parser, data, std::forward<Ts>(ts)...);}
+    auto operator()(Ts &&...ts) const & {return parse(parser, data, std::forward<Ts>(ts)...);}
 
     template <class ...Ts>
-    auto operator()(Ts &&...ts) && {return parse_of(parser, std::move(data), std::forward<Ts>(ts)...);}
+    auto operator()(Ts &&...ts) && {return parse(parser, std::move(data), std::forward<Ts>(ts)...);}
 
-    template <class T, int_if<(std::is_convertible<decltype(parse_of(parser, data)), T>::value)> = 0>
-    operator T() const & {return parse_of(parser, data);}
-    template <class T, int_if<(std::is_convertible<decltype(parse_of(parser, std::move(data))), T>::value)> = 0>
-    operator T() && {return parse_of(parser, std::move(data));}
+    template <class T, int_if<(std::is_convertible<decltype(parse(parser, data)), T>::value)> = 0>
+    operator T() const & {return parse(parser, data);}
+    template <class T, int_if<(std::is_convertible<decltype(parse(parser, std::move(data))), T>::value)> = 0>
+    operator T() && {return parse(parser, std::move(data));}
 };
 
 template <class ...Parsers>

@@ -12,12 +12,13 @@ class window_predicate : Predicate, expression_base {
 public:
 
     template <class ...Ts>
-    constexpr window_predicate(Ts &&...ts) : predicate(std::forward<Ts>(ts)...) {}
+    explicit constexpr window_predicate(Ts &&...ts) : predicate(std::forward<Ts>(ts)...) {}
 
     template <class Window>
-    auto check(Window &w) const {return predicate(w);}
+    auto operator()(check_base, Window &w) const {return predicate(w);}
 
-    template <class T> constexpr auto parse(T const &t) const {return t;}
+    template <class T>
+    constexpr auto operator()(parse_base, T t) const {return t;}
 };
 
 /******************************************************************************************/

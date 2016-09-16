@@ -23,7 +23,7 @@ struct reduce_variant<variant<T, Ts...>, std::enable_if_t<false && decltype(hana
 
 template <class P, class W>
 struct alt_check {
-    using value_type = decltype(check_of(std::declval<P const &>(), std::declval<W &>()));
+    using value_type = decltype(check(std::declval<P const &>(), std::declval<W &>()));
     value_type value;
 
     template <class ...Ts>
@@ -33,42 +33,59 @@ struct alt_check {
 /******************************************************************************************/
 
 template <class ...Parsers>
-struct alternative : parser_base {
+class alternative : public parser_base {
     hana::tuple<Parsers...> parsers;
+
+    template <class Parser, class Window>
+    struct Check {
+        using T = decltype(check(check_c, std::declval<Parser const &>(), std::declval<Window &>()));
+        T value;
+        Check(T t) : value(std::move(t)) {}
+    };
+
+    template <class I, class Data, class ...Args>
+    struct Parse {
+        using T = decltype(parse(parse_c, std::declval<hana::tuple<Parsers ...> const &>()[I()], std::move(std::declval<Data &>()[I()].value), std::declval<Args &&>()...));
+        T value;
+        Parse(T t) : value(std::move(t)) {}
+    };
+
+public:
+
     static constexpr auto types = hana::tuple_t<Parsers...>;
 
     template <class ...Ts>
     constexpr alternative(Ts &&...ts) : parsers(std::forward<Ts>(ts)...) {}
 
-    template <class Parser, class Window>
-    struct Check {
-        using T = decltype(check_of(std::declval<Parser const &>(), std::declval<Window &>()));
-        T value;
-
-        Check(T t) : value(std::move(t)) {}
-    };
-
-    template <class Window>
-    optional_variant<Check<Parsers, Window>...> check(Window &w) const {
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    optional_variant<Check<Parsers, Window>...> operator()(Tag tag, Window &w) const {
         optional_variant<Check<Parsers, Window>...> ret;
         hana::for_each(enumerate(parsers), [&](auto const &p) {
              if (ret) return;
-             auto t = check_of(p[1_c], w);
-             if (success_of(p[1_c], t)) ret.emplace(p[0_c], std::move(t));
+             auto t = check(tag, p[1_c], w);
+             if (valid(p[1_c], t)) ret.emplace(p[0_c], std::move(t));
         });
         return ret;
     }
 
     template <class Data, class ...Args>
-    auto parse(Data &&data, Args &&...args) const {
-        auto const f = [&](auto i) {return hana::decltype_(parse_of(parsers[i], std::move(data[i]), std::forward<Args>(args)...));};
-        using R = decltype(*variant_c(hana::transform(indices_c<sizeof...(Parsers)>, f)));
+    static auto parse_type() {
+        auto ts = hana::transform(indices_c<sizeof...(Parsers)>, [](auto i){return hana::type_c<Parse<decltype(i), Data, Args...>>;});
+        return variant_c(ts);
+    }
 
-        return data.visit([&](auto i, auto &d) {
-            return reduce_variant<R>()(i, parse_of(parsers[i], std::move(d), std::forward<Args>(args)...));
+    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
+    decltype(*parse_type<Data, Args...>()) operator()(Tag tag, Data &&data, Args &&...args) const {
+        //auto const f = [&](auto i) {return hana::decltype_(parse(parsers[i], std::move(data[i].value), std::forward<Args>(args)...));};
+        //using R = decltype(*variant_c(hana::transform(indices_c<sizeof...(Parsers)>, f)));
+
+        return data.visit([&](auto i, auto &d) -> decltype(*parse_type<Data, Args...>()) {
+            return parse(tag, parsers[i], std::move(d.value), std::forward<Args>(args)...);
         });
     }
 };
+
+/******************************************************************************************/
 
 static constexpr auto alternative_c = hana::fuse(hana::template_<alternative>);
 

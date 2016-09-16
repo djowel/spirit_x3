@@ -75,17 +75,18 @@ auto digit_range(Window &w, N n) {
 
 template <class T, unsigned Radix = 10>
 struct uint_parser : parser_base {
-    template <class Window>
-    auto check(Window &w) const {
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag, Window &w) const {
         return w.no_skip([](auto &w) {
             return digit_range(w, hana::size_c<std::numeric_limits<T>::digits10>);
         });
     }
 
     template <class Data>
-    bool success(Data const &data) const {return data[2_c];}
+    bool operator()(valid_t, Data const &data) const {return data[2_c];}
 
-    template <class Data> T parse(Data data) const {
+    template <class Tag, class Data, int_if<is_parse<Tag>> = 0>
+    T operator()(Tag, Data data) const {
         auto const n = std::distance(data[0_c], data[1_c]);
         return std::inner_product(data[0_c], data[1_c], mask<T, Radix>.end() - n, static_cast<T>(0)) - remainder<T, Radix>[n];
     }
