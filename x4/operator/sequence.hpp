@@ -18,24 +18,15 @@ struct sequence : parser_base {
 
     template <class Window>
     auto check(Window &w) const {
-        std::cout << "oh...?" << std::endl;
         decltype(*optional_c(tuple_c(hana::transform(parsers, check_type(w))))) ret;
         bool good = true;
         auto save = w;
-        std::cout << "trying sequence...?" << std::endl;
         ret = hana::transform(parsers, [&](auto const &p) {
             decltype(*check_type(w)(p)) t;
-            std::cout << "made return value..." << std::endl;
-            if (good) {
-                good = success_of(p, t = check_of(p, w));
-            };
-            std::cout << "finished sequence try... " << good << std::endl;
-            std::cout << typeid(p).name() << std::endl;
+            if (good) good = success_of(p, t = check_of(p, w));
             return t;
         });
-        std::cout << " out of tries" << std::endl;
         if (!good) {ret.reset(); w = save;}
-        std::cout << "oh2...?" << std::endl;
         return ret;
     }
 

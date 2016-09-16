@@ -1,6 +1,5 @@
 #pragma once
 #include "../parse/parse.hpp"
-#include "../parse/variant.hpp"
 #include "../parse/common.hpp"
 
 #include <boost/hana/none_of.hpp>
@@ -60,4 +59,3 @@ constexpr auto operator-(restriction<Subject, Fails...> const &r, Fail const &f)
 /******************************************************************************************/
 
 }
-

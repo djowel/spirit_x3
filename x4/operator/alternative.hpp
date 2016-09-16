@@ -1,5 +1,5 @@
 #pragma once
-#include "../parse/variant.hpp"
+#include "../support/optional_variant.hpp"
 #include "../parse/parse.hpp"
 #include <boost/hana/for_each.hpp>
 
@@ -50,19 +50,12 @@ struct alternative : parser_base {
 
     template <class Window>
     optional_variant<Check<Parsers, Window>...> check(Window &w) const {
-        std::cout << "ok1" << std::boolalpha << std::endl;
         optional_variant<Check<Parsers, Window>...> ret;
-        std::cout << "ok1b" << std::endl;
         hana::for_each(enumerate(parsers), [&](auto const &p) {
-            std::cout << bool(ret) << " a " << size_t(p[0_c]) << std::endl;
              if (ret) return;
-             std::cout << bool(ret) << " b " << size_t(p[0_c]) << std::endl;
-             std::cout << bool(ret) << " c " << size_t(p[0_c]) << std::endl;
              auto t = check_of(p[1_c], w);
-             std::cout << "tried " << size_t(p[0_c]) << " got " << success_of(p[1_c], t) << std::endl;
              if (success_of(p[1_c], t)) ret.emplace(p[0_c], std::move(t));
         });
-        std::cout << "ok2 " << bool(ret) << std::endl;
         return ret;
     }
 

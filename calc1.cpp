@@ -31,17 +31,18 @@ namespace client
     namespace calculator_grammar
     {
 
-        //X4_DECLARE(expression); // :: term
-        //X4_DECLARE(term);       // :: factor
+        X4_DECLARE(expression); // :: term
+        X4_DECLARE(term);       // :: factor
         X4_DECLARE(factor);     // :: expression
 
-        //X4_DEFINE(expression) = term >> *('+' >> term);
+        X4_DEFINE(expression) = term >> *(('+' >> term) | ('-' >> term));
 
-        //X4_DEFINE(term) = factor >> *('*' >> factor);
+        X4_DEFINE(term) = factor >> *(('*' >> factor) | ('/' >> factor));
 
-        X4_DEFINE(factor) = ('+' >> factor) | x4::uint_x;//
-                        //  | '(' >> expression >> ')'
-                         // | ('+' >> factor);
+        X4_DEFINE(factor) = x4::uint_x
+                          | '(' >> expression >> ')'
+                          | ('-' >> factor)
+                          | ('+' >> factor);
 
         auto calculator = factor;
     }
@@ -55,6 +56,7 @@ namespace client
 ///////////////////////////////////////////////////////////////////////////////
 int main() {
     using namespace x4::literals;
+    using namespace boost::hana::literals;
 
     std::cout << "/////////////////////////////////////////////////////////\n\n";
     std::cout << "Expression parser...\n\n";
@@ -62,17 +64,12 @@ int main() {
     std::cout << "Type an expression...or [q or Q] to quit\n\n";
 
     std::string str = "1";
-    //while (std::getline(std::cin, str))
-    //{
-    //    if (str.empty() || str[0] == 'q' || str[0] == 'Q')
-    //        break;
+    while (std::getline(std::cin, str))
+    {
+        if (str.empty() || str[0] == 'q' || str[0] == 'Q')
+            break;
 
         auto& calc = client::calculator;    // Our grammar
-
-        x4::variant<std::vector<int>, bool> blah;
-        auto blah2 = blah;
-        blah = blah2;
-
         bool r = parser(client::calculator, ' '_x).check(str);
 
 
@@ -85,7 +82,7 @@ int main() {
             std::cout << "Parsing failed\n";
             std::cout << "-------------------------\n";
         }
-    //}
+    }
 
     std::cout << "Bye... :-) \n\n";
     return 0;
