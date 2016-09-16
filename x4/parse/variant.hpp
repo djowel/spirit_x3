@@ -5,8 +5,9 @@
 #include <boost/hana/plus.hpp>
 #include <boost/hana/equal.hpp>
 #include <boost/hana/minus.hpp>
-
 #include <boost/variant.hpp>
+
+#include "../support/variant.hpp"
 #include <utility>
 
 namespace x4 {
@@ -43,10 +44,10 @@ static constexpr auto is_complete = false;// is_complete_helper<T>::type::value;
 
 static constexpr auto index_wrap = hana::fuse(hana::template_<index_wrapper>);
 
-template <class I, class T> struct recursive_t {    
+template <class I, class T> struct recursive_t {
     using type = std::conditional_t<
-        is_complete<T>, 
-        index_wrapper<I, T>, 
+        is_complete<T>,
+        index_wrapper<I, T>,
         boost::recursive_wrapper<index_wrapper<I, T>>
     >;
 };
@@ -55,6 +56,7 @@ static constexpr auto recursive_c = hana::fuse(hana::metafunction<recursive_t>);
 
 /******************************************************************************************/
 
+/*
 template <class ...Types>
 class variant {
 public:
@@ -101,7 +103,7 @@ public:
         return visit_(0_c, which(), [&](auto i) {return std::forward<F>(f)(i, (*this)[i]);});
     }
 };
-
+*/
 /******************************************************************************************/
 
 static constexpr auto variant_c = hana::fuse(hana::template_<variant>);
@@ -124,12 +126,14 @@ public:
     void emplace(I i, Ts &&...ts) {base::emplace(i + 1_c, std::forward<Ts>(ts)...);}
 
     template <class F> constexpr auto visit(F &&f) const {
-        return base::visit_(1_c, base::which(), [&](auto i) {return std::forward<F>(f)(i-1_c, (*this)[i-1_c]);});
+        return base::visit([&](auto i, auto const &t) {return std::forward<F>(f)(i-1_c, t);}, 1_c);
     }
 
     template <class F> constexpr auto visit(F &&f) {
-        return base::visit_(1_c, base::which(), [&](auto i) {return std::forward<F>(f)(i-1_c, (*this)[i-1_c]);});
+        return base::visit([&](auto i, auto &t) {return std::forward<F>(f)(i-1_c, t);}, 1_c);
     }
+
+    ~optional_variant() {} // {std::cout << "optional destroy " << ((void*)this)  << std::endl;}
 };
 
 static constexpr auto optional_variant_c = hana::fuse(hana::template_<optional_variant>);

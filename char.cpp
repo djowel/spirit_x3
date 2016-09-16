@@ -5,12 +5,14 @@
 namespace x4 {
 using namespace literals;
 
-template <class F>
-auto debug(F f) {
-    auto r = no_void[f(), no_void];
-    std::cout << "called debug" << std::endl;
-    return r;
+
+
+TEST_CASE("0") {
+    variant<char const *, double> ok;
+    variant<char const *, double> const ok2(0_c, "okk");
+    char const *x = ok2[0_c];
 }
+
 
 
 template <class T, class ...Ts>
@@ -21,12 +23,6 @@ void dump(T const &t, Ts const &...ts) {
 }
 
 TEST_CASE("1") {
-    auto int_function = []{return 1;}; // will be OK
-    auto void_function = []{}; // will be Error, assigned to void
-
-    int i = debug(int_function);
-    auto j = debug(void_function);
-
     std::string s = "aaa";
     auto w = make_window(s);
     constexpr auto x = 'a'_x;
@@ -171,7 +167,7 @@ struct blah {
     std::vector<int> goo;
     optional_variant<blah> next;
 };
-
+//
 TEST_CASE("15") {
     blah m_bah;
 }

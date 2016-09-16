@@ -61,16 +61,20 @@ int main() {
     std::cout << "/////////////////////////////////////////////////////////\n\n";
     std::cout << "Type an expression...or [q or Q] to quit\n\n";
 
-    std::string str;
-    while (std::getline(std::cin, str))
-    {
-        if (str.empty() || str[0] == 'q' || str[0] == 'Q')
-            break;
+    std::string str = "1";
+    //while (std::getline(std::cin, str))
+    //{
+    //    if (str.empty() || str[0] == 'q' || str[0] == 'Q')
+    //        break;
 
         auto& calc = client::calculator;    // Our grammar
 
+        x4::variant<std::vector<int>, bool> blah;
+        auto blah2 = blah;
+        blah = blah2;
+
         bool r = parser(client::calculator, ' '_x).check(str);
-        
+
 
         if (r) {
             std::cout << "-------------------------\n";
@@ -81,7 +85,7 @@ int main() {
             std::cout << "Parsing failed\n";
             std::cout << "-------------------------\n";
         }
-    }
+    //}
 
     std::cout << "Bye... :-) \n\n";
     return 0;

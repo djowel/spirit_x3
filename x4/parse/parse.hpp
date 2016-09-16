@@ -32,7 +32,12 @@ constexpr auto parse_of(P const &p, Ts &&...ts) {
 template <class T>
 struct implementation<T, void_if<is_parser<T>>> {
     template <class Parser, class Window>
-    constexpr auto check(Parser const &parser, Window &w) const {return parser.check(w); }
+    constexpr auto check(Parser const &parser, Window &w) const {
+        std::cout << "impl " <<  typeid(parser).name() << std::endl;
+        auto c = parser.check(w);
+        std::cout << "impl2 " <<  typeid(parser).name() << std::endl;
+        return c;
+    }
 
     template <class Parser, class Data>
     auto success(Parser const &parser, Data const &data) const {
