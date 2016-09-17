@@ -20,7 +20,7 @@ public:
     auto plus(T t) const {return hana::insert(hana::erase_key(map, t), hana::make_pair(t, count(t) + 1_c));}
 
     template <class T>
-    auto zero(T t) const {return hana::insert(hana::erase_key(map, t), hana::make_pair(t, 0_c));}
+    auto zero(T t) const {return hana::erase_key(map, t);}
 };
 
 /******************************************************************************************/

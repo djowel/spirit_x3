@@ -24,46 +24,33 @@ static constexpr auto recurse_limit = 0_c;
 /******************************************************************************************/
 
 struct alternative_base {
-    template <class Parser, class Window>
+    template <class Tag, class Parser, class Window>
     class check_t {
-        using value_type = decltype(check(check_c, std::declval<Parser const &>(), std::declval<Window &>()));
+        using value_type = decltype(check(std::declval<Tag>(), std::declval<Parser const &>(), std::declval<Window &>()));
         value_type m_value;
-
     public:
-
         value_type & value() {return m_value;}
         value_type const & value() const {return m_value;}
-
-        template <class Tag>
-        check_t(Tag tag, Parser const &p, Window &w) : m_value(check(tag, p, w)) {}
 
         check_t(value_type v) : m_value(std::move(v)) {}
+        check_t(Tag tag, Parser const &p, Window &w) : m_value(check(tag, p, w)) {}
     };
 
-    template <class Parser, class Data, class ...Args>
+    template <class Tag, class Parser, class Data, class ...Args>
     struct parse_t {
-        using value_type = decltype(parse(parse_c, std::declval<Parser const &>(), std::declval<Data &&>(), std::declval<Args &&>()...));
+        using value_type = decltype(parse(std::declval<Tag>(), std::declval<Parser const &>(), std::declval<Data &&>(), std::declval<Args &&>()...));
         value_type m_value;
-
     public:
-
         value_type & value() {return m_value;}
         value_type const & value() const {return m_value;}
 
-        template <class Tag>
+        parse_t(value_type v) : m_value(std::move(v)) {}
         parse_t(Tag tag, Parser const &p, Data &&d, Args &&...args)
             : m_value(parse(tag, p, std::move(d), std::forward<Args>(args)...)) {}
-
-        parse_t(value_type v) : m_value(std::move(v)) {}
     };
 
     static auto constexpr parse_ = hana::template_<parse_t>;
 };
-
-/// Everything is fine for [0..N) actually. No extra struct needed. Only needed every N values.
-// or is it.
-// I think so. we let normal recursion go for [0..N) then hijack into incomplete struct for the N
-// Probably don't need tag then, since it is in general 0_c -- unless something weird? I think OK.
 
 template <class ...Parsers>
 class alternative : public parser_base, public alternative_base {
@@ -77,7 +64,7 @@ class alternative : public parser_base, public alternative_base {
     }
     template <bool B, class Tag, class Window, int_if<B> = 0>
     auto check_type(Tag tag, Window &w) const {
-        return hana::type_c<optional_variant<true, alternative_base::check_t<Parsers, Window>...>>;
+        return hana::type_c<optional_variant<true, alternative_base::check_t<Tag, Parsers, Window>...>>;
     }
 
     template <class R, class Tag, class Window>
@@ -99,7 +86,7 @@ class alternative : public parser_base, public alternative_base {
     template <bool B, class Tag, class Data, class ...Args, int_if<B> = 0>
     auto parse_type(Tag tag, Data data, Args &&...) const {
         return variant_c<true>(hana::transform(indices_c<sizeof...(Parsers)>,
-            [&](auto i) {return alternative_base::parse_(type_of(parsers()[i]), type_of(data[i]), hana::type_c<Args>...);}));
+            [&](auto i) {return alternative_base::parse_(type_of(tag), type_of(parsers()[i]), type_of(data[i]), hana::type_c<Args>...);}));
     }
     template <class R, class Tag, class Data, class ...Args>
     R do_parse(Tag tag, Data data, Args &&...args) const {
