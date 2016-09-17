@@ -58,8 +58,8 @@ struct test1 {test1(double) {}};
 struct test2 {test2(bool) {}};
 
 TEST_CASE("5") {
-    variant<true, test1, test2> var1(0_c, 5.5);
-    variant<true, test1, test2> var2{var1};
+    variant<false, test1, test2> var1(0_c, 5.5);
+    variant<false, test1, test2> var2{var1};
 }
 
 TEST_CASE("6") {

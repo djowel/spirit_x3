@@ -110,21 +110,18 @@ public:
     template <bool B=true, int_if<B && hana::traits::is_default_constructible(types[0_c])> = 0>
     constexpr variant() : status(0_c) {new(ptr()) decltype(*types[0_c]){};}
 
-    template <class I, class ...Ts, int_if<can_construct(std::declval<I>(), hana::type_c<Ts &&>...)> = 0>
+    template <class I, class ...Ts, int_if<decltype(can_construct(std::declval<I>(), hana::type_c<Ts &&>...))::value> = 0>
     explicit variant(I i, Ts &&...ts) : status(i) {new(ptr()) decltype(*types[i])(std::forward<Ts>(ts)...);}
 
     /**************************************************************************************/
 
-    template <bool B=true, int_if<B && can_move> = 0>
-    variant(variant &&v) : status(v.status) {fold(0_c, status, move(), *this, v);}
+    variant(variant &&v, int_if<can_move> = 0) : status(v.status) {fold(0_c, status, move(), *this, v);}
 
-//    template <bool B=true, int_if<B && can_copy> = 0>
-//    variant(variant const &v) : status(v.status) {fold(0_c, status, copy(), *this, v);}
-//
-//    friend void swap(variant &v1, variant &v2) {std::swap(v1.data, v2.data); std::swap(v1.status, v2.status);}
-//
-//    template <bool B=true, int_if<B && (can_move || can_copy)> = 0>
-//    variant & operator=(variant other) {swap(*this, other); return *this;}
+    variant(variant const &v, int_if<can_copy> = 0) : status(v.status) {fold(0_c, status, copy(), *this, v);}
+
+    friend void swap(variant &v1, variant &v2) {std::swap(v1.data, v2.data); std::swap(v1.status, v2.status);}
+
+    variant & operator=(variant other) {swap(*this, other); return *this;}
 
     /**************************************************************************************/
 

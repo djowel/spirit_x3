@@ -5,6 +5,8 @@
 
 namespace x4 {
 
+static constexpr auto recurse_limit = 0_c;
+
 /******************************************************************************************/
 
 //template <class V, class=void>
@@ -40,7 +42,7 @@ struct alternative_base {
 
     template <class Parser, class Data, class ...Args>
     struct parse_t {
-        using value_type = decltype(parse(parse_c, std::declval<Parser const &>(), std::declval<Data>()));
+        using value_type = decltype(parse(parse_c, std::declval<Parser const &>(), std::declval<Data &&>(), std::declval<Args &&>()...));
         value_type m_value;
 
     public:
@@ -49,12 +51,12 @@ struct alternative_base {
         value_type const & value() const {return m_value;}
 
         template <class Tag>
-        parse_t(Tag tag, Parser const &p, Data &&d, Args &&...args) 
+        parse_t(Tag tag, Parser const &p, Data &&d, Args &&...args)
             : m_value(parse(tag, p, std::move(d), std::forward<Args>(args)...)) {}
 
         parse_t(value_type v) : m_value(std::move(v)) {}
     };
-    
+
     static auto constexpr parse_ = hana::template_<parse_t>;
 };
 
@@ -91,12 +93,12 @@ class alternative : public parser_base, public alternative_base {
 
     template <bool B, class Tag, class Data, class ...Args, int_if<!B> = 0>
     auto parse_type(Tag tag, Data data, Args &&...args) const {
-        return variant_c<false>(hana::transform(indices_c<sizeof...(Parsers)>, 
+        return variant_c<false>(hana::transform(indices_c<sizeof...(Parsers)>,
             [&](auto i) {return type_of(parse(tag, parsers()[i], std::move(data[i]), std::forward<Args>(args)...));}));
     }
     template <bool B, class Tag, class Data, class ...Args, int_if<B> = 0>
     auto parse_type(Tag tag, Data data, Args &&...) const {
-        return variant_c<true>(hana::transform(indices_c<sizeof...(Parsers)>, 
+        return variant_c<true>(hana::transform(indices_c<sizeof...(Parsers)>,
             [&](auto i) {return alternative_base::parse_(type_of(parsers()[i]), type_of(data[i]), hana::type_c<Args>...);}));
     }
     template <class R, class Tag, class Data, class ...Args>
@@ -114,7 +116,7 @@ public:
     template <class Tag, class Window, int_if<is_check<Tag>> = 0>
     auto operator()(Tag const tag, Window &w) const {
         constexpr auto id = hana::type_c<ID<Window>>;
-        auto cycle = (tag.count(id) >= 0_c);
+        auto cycle = (tag.count(id) >= recurse_limit);
         auto tag2 = hana::if_(cycle, tag.zero(id), tag.plus(id));
         using R = decltype(*check_type<cycle>(tag2, w));
         return do_check<R>(tag2, w);
@@ -123,7 +125,7 @@ public:
     template <class Tag, class ...Args, int_if<is_parse<Tag>> = 0>
     auto operator()(Tag const tag, Args &&...args) const {
         constexpr auto id = hana::type_c<ID<Args...>>;
-        auto cycle = (tag.count(id) >= 0_c);
+        auto cycle = (tag.count(id) >= recurse_limit);
         auto tag2 = hana::if_(cycle, tag.zero(id), tag.plus(id));
         using R = decltype(*parse_type<cycle>(tag2, std::forward<Args>(args)...));
         return do_parse<R>(tag2, std::forward<Args>(args)...);
