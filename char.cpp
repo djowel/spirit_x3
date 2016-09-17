@@ -5,15 +5,11 @@
 namespace x4 {
 using namespace literals;
 
-
-
 TEST_CASE("0") {
-    variant<char const *, double> ok;
-    variant<char const *, double> const ok2(0_c, "okk");
+    variant<false, char const *, double> ok;
+    variant<false, char const *, double> const ok2(0_c, "okk");
     char const *x = ok2[0_c];
 }
-
-
 
 template <class T, class ...Ts>
 void dump(T const &t, Ts const &...ts) {
@@ -51,7 +47,7 @@ TEST_CASE("3") {
 }
 
 TEST_CASE("4") {
-    optional_variant<int, double> var;
+    optional_variant<false, int, double> var;
     REQUIRE(!bool(var));
     var.emplace(1_c, 5.5);
     REQUIRE(var[1_c] == 5.5);
@@ -62,8 +58,8 @@ struct test1 {test1(double) {}};
 struct test2 {test2(bool) {}};
 
 TEST_CASE("5") {
-    variant<test1, test2> var1(0_c, 5.5);
-    variant<test1, test2> var2{var1};
+    variant<true, test1, test2> var1(0_c, 5.5);
+    variant<true, test1, test2> var2{var1};
 }
 
 TEST_CASE("6") {
@@ -73,9 +69,8 @@ TEST_CASE("6") {
 
     std::string s = "abbc";
     auto w = make_window(s);
+    auto c = check(check_c, z, w);
     REQUIRE(bool(check(check_c, z, w)));
-    REQUIRE(bool(check(check_c, z, w)));
-
     auto result = parse(parse_c, z, check(check_c, z, w));
     REQUIRE(result[1_c] == 'b');
     REQUIRE(!bool(check(check_c, z, w)));
@@ -87,8 +82,8 @@ TEST_CASE("7") {
     constexpr auto z = seq(x, y);
 
     std::string s = "abc";
-    auto w = make_window(s);
-    dump(valid(z, check(z, w)));
+    auto p = parser(z)(s);
+    std::cout << p[0_c] << p[1_c] << std::endl;
 }
 
 TEST_CASE("8") {
@@ -166,17 +161,11 @@ TEST_CASE("14") {
 
 struct blah {
     std::vector<int> goo;
-    optional_variant<blah> next;
+    optional_variant<true, blah> next;
 };
 //
 TEST_CASE("15") {
     blah m_bah;
 }
-
-
-// main simple things missing:
-// NUMBERS
-// SKIPPING
-// that's it I guess.
 
 }

@@ -9,7 +9,7 @@
 namespace x4 {
 
 template <class ...Types>
-using aligned_union_t = typename std::aligned_union<1024, Types...>::type;
+using aligned_union_t = typename std::aligned_union<0, Types...>::type;
 static constexpr auto aligned_union = hana::fuse(hana::template_<aligned_union_t>);
 
 /******************************************************************************************/
@@ -37,11 +37,13 @@ constexpr auto index_if(V const &v, P &&p) {
 
 /******************************************************************************************/
 
-template <class ...Types>
+template <bool Recursive, class ...Types>
 class variant {
-
     static constexpr auto size = hana::int_c<sizeof...(Types)>;
-    static constexpr auto types = hana::tuple_t<recursive_wrap<Types>...>;
+    static constexpr auto types = hana::if_(hana::bool_c<Recursive>,
+        hana::tuple_t<recursive_wrap<Types>...>,
+        hana::tuple_t<nonrecursive_wrap<Types>...>
+    );
     static constexpr auto storage = aligned_union(types);
 
     static constexpr auto can_move = hana::all_of(types, hana::traits::is_move_constructible);
@@ -52,7 +54,7 @@ class variant {
     static constexpr auto can_construct(I i, Ts ...ts) {return hana::traits::is_constructible(types[i], ts...);}
 
     decltype(*storage) data;
-    std::conditional_t<size <= 1, decltype(size), int> status;
+    std::conditional_t<sizeof...(Types) <= 1, decltype(size), int> status;
 
     /**************************************************************************************/
 
@@ -74,10 +76,8 @@ class variant {
     };
 
     struct destroy {
-        template <class I, class T=decltype(*types[I()]), int_if<std::is_class<T>::value> = 0>
+        template <class I, class T=decltype(*types[I()])>
         void operator()(I i, variant &self) const {static_cast<T *>(self.ptr())->~T();}
-        template <class I, int_if<!hana::traits::is_class(types[I()])> = 0>
-        void operator()(I i, variant &self) const {}
     };
 
     struct at {
@@ -89,12 +89,17 @@ class variant {
 
 protected:
 
+    // can redo to use jump table
     template <class F, class I, class N, class ...Ts, int_if<I::value + 1 >= size> = 0>
-    static decltype(auto) fold(I i, N n, F &&f, Ts &&...ts) {assert(i == n); return f(i, std::forward<Ts>(ts)...);}
+    static decltype(auto) fold(I i, N n, F &&f, Ts &&...ts) {
+        static_assert(i >= 0_c && i < size, "variant out of range");
+        assert(i == n); return std::forward<F>(f)(i, std::forward<Ts>(ts)...);
+    }
 
     template <class F, class I, class N, class ...Ts, int_if<I::value + 2 <= size> = 0>
     static decltype(auto) fold(I i, N n, F &&f, Ts &&...ts) {
-        if (n == i) return f(i, std::forward<Ts>(ts)...);
+        static_assert(i >= 0_c && i < size, "variant out of range");
+        if (n == i) return std::forward<F>(f)(i, std::forward<Ts>(ts)...);
         else return fold(i + 1_c, n, std::forward<F>(f), std::forward<Ts>(ts)...);
     }
 
@@ -105,7 +110,7 @@ public:
     template <bool B=true, int_if<B && hana::traits::is_default_constructible(types[0_c])> = 0>
     constexpr variant() : status(0_c) {new(ptr()) decltype(*types[0_c]){};}
 
-    template <class I, class ...Ts, int_if<decltype(can_construct(std::declval<I>(), hana::type_c<Ts &&>...))::value> = 0>
+    template <class I, class ...Ts, int_if<can_construct(std::declval<I>(), hana::type_c<Ts &&>...)> = 0>
     explicit variant(I i, Ts &&...ts) : status(i) {new(ptr()) decltype(*types[i])(std::forward<Ts>(ts)...);}
 
     /**************************************************************************************/
@@ -113,13 +118,13 @@ public:
     template <bool B=true, int_if<B && can_move> = 0>
     variant(variant &&v) : status(v.status) {fold(0_c, status, move(), *this, v);}
 
-    template <bool B=true, int_if<B && can_copy> = 0>
-    variant(variant const &v) : status(v.status) {fold(0_c, status, copy(), *this, v);}
-
-    friend void swap(variant &v1, variant &v2) {std::swap(v1.data, v2.data); std::swap(v1.status, v2.status);}
-
-    template <bool B=true, int_if<B && (can_move || can_copy)> = 0>
-    variant & operator=(variant other) {swap(*this, other); return *this;}
+//    template <bool B=true, int_if<B && can_copy> = 0>
+//    variant(variant const &v) : status(v.status) {fold(0_c, status, copy(), *this, v);}
+//
+//    friend void swap(variant &v1, variant &v2) {std::swap(v1.data, v2.data); std::swap(v1.status, v2.status);}
+//
+//    template <bool B=true, int_if<B && (can_move || can_copy)> = 0>
+//    variant & operator=(variant other) {swap(*this, other); return *this;}
 
     /**************************************************************************************/
 
@@ -157,6 +162,11 @@ public:
     ~variant() {fold(0_c, status, destroy(), *this);}
 };
 
-static constexpr auto variant_c = hana::fuse(hana::template_<variant>);
+template <class ...Types> using recursive_variant = variant<true, Types...>;
+template <class ...Types> using nonrecursive_variant = variant<false, Types...>;
+
+template <bool B=false> static constexpr auto variant_c = hana::fuse(hana::template_<recursive_variant>);
+template <> static constexpr auto variant_c<> = hana::fuse(hana::template_<nonrecursive_variant>);
+
 
 }

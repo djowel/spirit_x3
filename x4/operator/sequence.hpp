@@ -12,24 +12,26 @@ namespace x4 {
 
 template <class ...Parsers>
 class sequence : public parser_base {
-    hana::tuple<Parsers...> parsers;
+    hana::tuple<Parsers...> m_parsers;
 
     template <class T, class W>
     auto check_type(T tag, W &w) const {
         auto f = [&](auto const &p) {return hana::decltype_(check(tag, p, w));};
-        return optional_c(tuple_c(hana::transform(parsers, f)));
+        return optional_c(tuple_c(hana::transform(m_parsers, f)));
     }
 
 public:
 
-    constexpr sequence(hana::tuple<Parsers...> tuple) : parsers(std::move(tuple)) {}
+    auto const & parsers() const {return m_parsers;}
+
+    constexpr sequence(hana::tuple<Parsers...> tuple) : m_parsers(std::move(tuple)) {}
 
     template <class T, class Window, int_if<is_check<T>> = 0>
     auto operator()(T tag, Window &w) const {
         decltype(*check_type(tag, w)) ret;
         bool good = true;
         auto save = w;
-        ret = hana::transform(parsers, [&](auto const &p) {
+        ret = hana::transform(m_parsers, [&](auto const &p) {
             decltype(check(tag, p, w)) t;
             if (good) good = valid(p, t = check(tag, p, w));
             return t;
@@ -39,9 +41,9 @@ public:
     }
 
     template <class T, class Data, class ...Args, int_if<is_parse<T>> = 0>
-    decltype(auto) operator()(T tag, Data &&data, Args &&...args) const {
+    auto operator()(T tag, Data &&data, Args &&...args) const {
         return hana::transform(indices_c<sizeof...(Parsers)>, [&] (auto i) {
-            return parse(tag, parsers[i], std::move((*data)[i]), args...);
+            return parse(tag, m_parsers[i], std::move((*data)[i]), args...);
         });
     }
 };
@@ -63,36 +65,43 @@ template <class L, class R, int_if<(is_expression<L> || is_expression<R>) && !(i
 constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::make_tuple(expr(l), expr(r)));}
 
 template <class L, class R, int_if<is_sequence<L> && !is_sequence<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::append(l.parsers, expr(r)));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::append(l.parsers(), expr(r)));}
 
 template <class L, class R, int_if<!is_sequence<L> && is_sequence<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::prepend(r.parsers, expr(l)));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::prepend(r.parsers(), expr(l)));}
 
 template <class L, class R, int_if<is_sequence<L> && is_sequence<R>> = 0>
-constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::concat(l.parsers, r.parsers));}
+constexpr auto operator>>(L const &l, R const &r) {return make_sequence(hana::concat(l.parsers(), r.parsers()));}
 
 template <class ...Ts>
 constexpr auto seq(Ts &&...ts) {return make_sequence(hana::make_tuple(expr(std::forward<Ts>(ts))...));}
 
 /******************************************************************************************/
 
-template <class Index, class Parser, class Data>
-struct sequence_caller {
-    Index index;
-    Parser parser;
+template <class Tag, class Parser, class Data>
+class sequence_caller {
     Data data;
+    Parser parser;
+    Tag tag;
+public:
+
+    sequence_caller(Tag t, Parser p, Data &&d) : data(std::move(d)), parser(p), tag(t) {}
 
     template <class ...Ts>
-    auto operator()(Ts &&...ts) const & {return parse(parser, data, std::forward<Ts>(ts)...);}
-
+    auto operator()(Ts &&...ts) const & {return parse(tag, parser, data, std::forward<Ts>(ts)...);}
     template <class ...Ts>
-    auto operator()(Ts &&...ts) && {return parse(parser, std::move(data), std::forward<Ts>(ts)...);}
+    auto operator()(Ts &&...ts) && {return parse(tag, parser, std::move(data), std::forward<Ts>(ts)...);}
 
-    template <class T, int_if<(std::is_convertible<decltype(parse(parser, data)), T>::value)> = 0>
-    operator T() const & {return parse(parser, data);}
-    template <class T, int_if<(std::is_convertible<decltype(parse(parser, std::move(data))), T>::value)> = 0>
-    operator T() && {return parse(parser, std::move(data));}
+    template <class T, int_if<(std::is_convertible<decltype(parse(tag, parser, data)), T>::value)> = 0>
+    operator T() const & {return parse(tag, parser, data);}
+    template <class T, int_if<(std::is_convertible<decltype(parse(tag, parser, std::move(data))), T>::value)> = 0>
+    operator T() && {return parse(tag, parser, std::move(data));}
 };
+
+template <class Tag, class Parser, class Data>
+auto make_sequence_caller(Tag tag, Parser const &p, Data &&data) {
+    return sequence_caller<Tag, Parser const &, std::decay_t<Data>>(std::move(tag), p, std::move(data));
+}
 
 template <class ...Parsers>
 struct visit_expression<sequence<Parsers...>, void> {
@@ -104,12 +113,12 @@ struct visit_expression<sequence<Parsers...>, void> {
         }
     };
 
-    template <class Data, class Operation, class ...Args>
-    auto operator()(sequence<Parsers...> const &s, Operation const &op, Data &&data, Args &&...args) {
-        return helper<Args...>()(std::make_index_sequence<sizeof...(Parsers)>(),
-            hana::transform(indices_c<sizeof...(Parsers)>, [&](auto i) {
-                return sequence_caller<decltype(i), decltype(s.parsers[i]), std::decay_t<decltype((*data)[i])>>{i, s.parsers[i], std::move((*data)[i])};
-            }), op, std::forward<Args>(args)...);
+    template <class Tag, class Data, class Operation, class ...Args>
+    auto operator()(Tag const tag, sequence<Parsers...> const &s, Operation const &op, Data &&data, Args &&...args) {
+        auto callers = hana::transform(indices_c<sizeof...(Parsers)>, [&](auto i) {
+            return make_sequence_caller(tag, s.parsers()[i], std::move((*data)[i]));
+        });
+        return helper<Args...>()(std::make_index_sequence<sizeof...(Parsers)>(), std::move(callers), op, std::forward<Args>(args)...);
     }
 };
 

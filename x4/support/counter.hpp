@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/hana/map.hpp>
+#include <boost/hana/erase_key.hpp>
 
 namespace x4 {
 namespace hana = boost::hana;
@@ -16,10 +17,10 @@ public:
     auto count(T t) const {return hana::find(map, t).value_or(0_c);}
 
     template <class T>
-    auto plus(T t) const {return map.erase(t).insert(t, count() + 1_c);}
+    auto plus(T t) const {return hana::insert(hana::erase_key(map, t), hana::make_pair(t, count(t) + 1_c));}
 
     template <class T>
-    auto zero(T t) const {return map.erase(t).insert(t, 0_c);}
+    auto zero(T t) const {return hana::insert(hana::erase_key(map, t), hana::make_pair(t, 0_c));}
 };
 
 /******************************************************************************************/
@@ -30,7 +31,7 @@ template <class T>
 using map_type = std::conditional_t<std::is_same<void, T>::value, decltype(hana::make_map()), T>;
 
 template <class Map=void>
-class check_map : counter<map_type<Map>>, public check_base {
+class check_map : public counter<map_type<Map>>, public check_base {
     using base = counter<map_type<Map>>;
 public:
 
@@ -48,7 +49,7 @@ template <class T> static constexpr auto is_check = hana::bool_c<std::is_base_of
 struct parse_base {};
 
 template <class Map=void>
-class parse_map : counter<map_type<Map>>, public parse_base {
+class parse_map : public counter<map_type<Map>>, public parse_base {
     using base = counter<map_type<Map>>;
 public:
 
@@ -62,5 +63,8 @@ public:
 template <class T> static constexpr auto is_parse = hana::bool_c<std::is_base_of<parse_base, T>::value>;
 
 /******************************************************************************************/
+
+static constexpr auto check_c = check_map<>();
+static constexpr auto parse_c = parse_map<>();
 
 }

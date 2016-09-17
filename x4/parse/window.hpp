@@ -1,5 +1,7 @@
 #pragma once
 #include "../parse/common.hpp"
+#include "../support/counter.hpp"
+
 #include <boost/hana/for_each.hpp>
 #include <boost/hana/prepend.hpp>
 #include <boost/hana/insert.hpp>
@@ -61,7 +63,7 @@ class window : public window<Iterator, Compare> {
         while (true) {
             bool changed = false;
             hana::for_each(m_masks, [&](auto const &m) {
-                while (valid(m, check(m, this->base()))) changed = true;
+                while (valid(m, check(check_c, m, this->base()))) changed = true;
             });
             if (sizeof...(Masks) < 2 || !changed) break;
         }

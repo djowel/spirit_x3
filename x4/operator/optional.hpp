@@ -19,9 +19,9 @@ public:
     template <class Data>
     auto operator()(valid_t, Data const &data) const {return hana::true_c;}
 
-    template <class Tag, class Data, class ...Args, int_if<is_check<Tag>> = 0>
+    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
     auto operator()(Tag tag, Data &&data, Args &&...args) const {
-        optional_type<decltype(parse(subject, std::forward<Data>(data), std::forward<Args>(args)...))> ret;
+        optional_type<decltype(parse(tag, subject, std::forward<Data>(data), std::forward<Args>(args)...))> ret;
         if (valid(subject, data)) ret = parse(tag, subject, std::forward<Data>(data), std::forward<Args>(args)...);
         return ret;
     }

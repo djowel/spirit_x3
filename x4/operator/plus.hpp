@@ -20,7 +20,7 @@ public:
     template <class Data>
     auto operator()(valid_t, Data const &data) const {return !data.empty();}
 
-    template <class Tag, class ...Args, int_if<is_check<Tag>> = 0>
+    template <class Tag, class ...Args, int_if<is_parse<Tag>> = 0>
     auto operator()(Tag tag, Args &&...args) const {return parse(tag, base(), std::forward<Args>(args)...);}
 
 };

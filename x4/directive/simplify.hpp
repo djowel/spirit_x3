@@ -11,15 +11,15 @@ struct simplified_t : parser_base {
 
     explicit constexpr simplified_t(Subject s) : subject(std::move(s)) {}
 
-    template <class T, class Window, int_if<is_check<T>> = 0>
-    auto operator()(T t, Window &w) const {return check(t, subject, w);}
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Window &w) const {return check(tag, subject, w);}
 
     template <class Data>
     auto operator()(valid_t, Data const &d) const {return valid(subject, d);}
 
-    template <class T, class Data, class ...Args, int_if<is_parse<T>> = 0>
-    auto operator()(T t, Data &&data, Args &&...args) const {
-        return parse(subject, std::forward<Data>(data), std::forward<Args>(args)...);
+    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
+    auto operator()(Tag tag, Data &&data, Args &&...args) const {
+        return parse(tag, subject, std::forward<Data>(data), std::forward<Args>(args)...);
     }
 };
 
@@ -38,9 +38,9 @@ constexpr auto operator%(Subject &&subject, simplify_t) {
 
 template <class Subject>
 struct visit_expression<simplified_t<Subject>, void_if<!is_sequence<Subject>>> {
-    template <class Data, class Operation, class ...Args>
-    auto operator()(simplified_t<Subject> const &s, Operation const &op, Data &&data, Args &&...args) const {
-        return op(parse(s, std::forward<Data>(data)), std::forward<Args>(args)...);
+    template <class Tag, class Data, class Operation, class ...Args>
+    auto operator()(Tag tag, simplified_t<Subject> const &s, Operation const &op, Data &&data, Args &&...args) const {
+        return op(parse(tag, s, std::forward<Data>(data)), std::forward<Args>(args)...);
     }
 };
 
@@ -54,10 +54,10 @@ struct visit_expression<simplified_t<Subject>, void_if<is_sequence<Subject>>> {
         }
     };
 
-    template <class Data, class Operation, class ...Args>
-    auto operator()(simplified_t<Subject> const &s, Operation const &op, Data &&data, Args &&...args) const {
-        constexpr auto is = std::make_index_sequence<decltype(hana::length(parse(s, std::forward<Data>(data))))::value>();
-        return helper<Args...>()(is, parse(s, std::forward<Data>(data)), op, std::forward<Args>(args)...);
+    template <class Tag, class Data, class Operation, class ...Args>
+    auto operator()(Tag tag, simplified_t<Subject> const &s, Operation const &op, Data &&data, Args &&...args) const {
+        constexpr auto is = std::make_index_sequence<decltype(hana::length(parse(tag, s, std::forward<Data>(data))))::value>();
+        return helper<Args...>()(is, parse(tag, s, std::forward<Data>(data)), op, std::forward<Args>(args)...);
     }
 };
 

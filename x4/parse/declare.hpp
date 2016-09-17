@@ -32,7 +32,7 @@ struct implementation<P, void_if<has_adl_impl<P>::value && !has_member_impl<P>::
     template <class Data>
     constexpr auto operator()(valid_t, P const &p, Data const &data) const {return valid(implement(p), data);}
 
-    template <class Tag, class ...Args, int_if<is_check<Tag>> = 0>
+    template <class Tag, class ...Args, int_if<is_parse<Tag>> = 0>
     constexpr auto operator()(Tag tag, P const &p, Args &&...args) const {return parse(tag, implement(p), std::forward<Args>(args)...);}
 };
 
@@ -46,7 +46,7 @@ struct implementation<P, void_if<has_member_impl<P>::value>> {
     template <class Data>
     constexpr auto operator()(valid_t, P const &p, Data const &data) const {return valid(p.implement(), data);}
 
-    template <class Tag, class ...Args, int_if<is_check<Tag>> = 0>
+    template <class Tag, class ...Args, int_if<is_parse<Tag>> = 0>
     constexpr auto operator()(Tag tag, P const &p, Args &&...args) const {return parse(tag, p.implement(), std::forward<Args>(args)...);}
 };
 

@@ -10,11 +10,16 @@
 
 namespace x4 {
 
+struct blank {
+    auto & value() {return *this;}
+    auto const & value() const {return *this;}
+};
+
 /******************************************************************************************/
 
-template <class ...Types>
-class optional_variant : public variant<decltype(*nothing_c), Types...> {
-    using base = variant<decltype(*nothing_c), Types...>;
+template <bool Recursive, class ...Types>
+class optional_variant : public variant<Recursive, blank, Types...> {
+    using base = variant<Recursive, blank, Types...>;
 
     struct at {
         template <class I, class Var, class F, class ...Ts>
@@ -36,13 +41,22 @@ public:
     void emplace(I i, Ts &&...ts) {base::emplace(i + 1_c, std::forward<Ts>(ts)...);}
 
     template <class ...Ts>
-    decltype(auto) visit(Ts &&...ts) {return base::fold(1_c, base::index(), at(), *this, std::forward<Ts>(ts)...);}
+    decltype(auto) visit(Ts &&...ts) {
+        assert(bool(*this));
+        return base::fold(1_c, base::index(), at(), *this, std::forward<Ts>(ts)...);
+    }
 
     template <class ...Ts>
-    decltype(auto) visit(Ts &&...ts) const {return base::fold(1_c, base::index(), at(), *this, std::forward<Ts>(ts)...);}
+    decltype(auto) visit(Ts &&...ts) const {
+        assert(bool(*this));
+        return base::fold(1_c, base::index(), at(), *this, std::forward<Ts>(ts)...);}
 };
 
-static constexpr auto optional_variant_c = hana::fuse(hana::template_<optional_variant>);
+template <class ...Types> using recursive_optional_variant = optional_variant<true, Types...>;
+template <class ...Types> using nonrecursive_optional_variant = optional_variant<false, Types...>;
+
+template <bool B=false> static constexpr auto optional_variant_c = hana::fuse(hana::template_<recursive_optional_variant>);
+template <> static constexpr auto optional_variant_c<> = hana::fuse(hana::template_<nonrecursive_optional_variant>);
 
 /******************************************************************************************/
 

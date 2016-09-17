@@ -7,81 +7,126 @@ namespace x4 {
 
 /******************************************************************************************/
 
-template <class V, class=void>
-struct reduce_variant {
-    template <class I, class T>
-    constexpr auto operator()(I i, T &&t) const {return V(i, std::forward<T>(t));}
-};
-
-template <class T, class ...Ts>
-struct reduce_variant<variant<T, Ts...>, std::enable_if_t<false && decltype(hana::tuple_t<T, Ts...> == hana::tuple_t<Ts..., T>)::value>> {
-    template <class I, class T_>
-    auto operator()(I, T_ &&t) const {return std::forward<T_>(t);}
-};
-
-/******************************************************************************************/
-
-template <class P, class W>
-struct alt_check {
-    using value_type = decltype(check(std::declval<P const &>(), std::declval<W &>()));
-    value_type value;
-
-    template <class ...Ts>
-    alt_check(Ts &&...ts) : value(std::forward<Ts>(ts)...) {}
-};
+//template <class V, class=void>
+//struct reduce_variant {
+//    template <class I, class T>
+//    constexpr auto operator()(I i, T &&t) const {return V(i, std::forward<T>(t));}
+//};
+//
+//template <class T, class ...Ts>
+//struct reduce_variant<variant<T, Ts...>, std::enable_if_t<false && decltype(hana::tuple_t<T, Ts...> == hana::tuple_t<Ts..., T>)::value>> {
+//    template <class I, class T_>
+//    auto operator()(I, T_ &&t) const {return std::forward<T_>(t);}
+//};
 
 /******************************************************************************************/
+
+struct alternative_base {
+    template <class Parser, class Window>
+    class check_t {
+        using value_type = decltype(check(check_c, std::declval<Parser const &>(), std::declval<Window &>()));
+        value_type m_value;
+
+    public:
+
+        value_type & value() {return m_value;}
+        value_type const & value() const {return m_value;}
+
+        template <class Tag>
+        check_t(Tag tag, Parser const &p, Window &w) : m_value(check(tag, p, w)) {}
+
+        check_t(value_type v) : m_value(std::move(v)) {}
+    };
+
+    template <class Parser, class Data, class ...Args>
+    struct parse_t {
+        using value_type = decltype(parse(parse_c, std::declval<Parser const &>(), std::declval<Data>()));
+        value_type m_value;
+
+    public:
+
+        value_type & value() {return m_value;}
+        value_type const & value() const {return m_value;}
+
+        template <class Tag>
+        parse_t(Tag tag, Parser const &p, Data &&d, Args &&...args) 
+            : m_value(parse(tag, p, std::move(d), std::forward<Args>(args)...)) {}
+
+        parse_t(value_type v) : m_value(std::move(v)) {}
+    };
+    
+    static auto constexpr parse_ = hana::template_<parse_t>;
+};
+
+/// Everything is fine for [0..N) actually. No extra struct needed. Only needed every N values.
+// or is it.
+// I think so. we let normal recursion go for [0..N) then hijack into incomplete struct for the N
+// Probably don't need tag then, since it is in general 0_c -- unless something weird? I think OK.
 
 template <class ...Parsers>
-class alternative : public parser_base {
-    hana::tuple<Parsers...> parsers;
+class alternative : public parser_base, public alternative_base {
+    hana::tuple<Parsers...> m_parsers;
 
-    template <class Parser, class Window>
-    struct Check {
-        using T = decltype(check(check_c, std::declval<Parser const &>(), std::declval<Window &>()));
-        T value;
-        Check(T t) : value(std::move(t)) {}
-    };
+    template <class ...Ts> struct ID;
 
-    template <class I, class Data, class ...Args>
-    struct Parse {
-        using T = decltype(parse(parse_c, std::declval<hana::tuple<Parsers ...> const &>()[I()], std::move(std::declval<Data &>()[I()].value), std::declval<Args &&>()...));
-        T value;
-        Parse(T t) : value(std::move(t)) {}
-    };
+    template <bool B, class Tag, class Window, int_if<!B> = 0>
+    auto check_type(Tag tag, Window &w) const {
+        return optional_variant_c<false>(hana::transform(m_parsers, [&](auto const &p) {return type_of(check(tag, p, w));}));
+    }
+    template <bool B, class Tag, class Window, int_if<B> = 0>
+    auto check_type(Tag tag, Window &w) const {
+        return hana::type_c<optional_variant<true, alternative_base::check_t<Parsers, Window>...>>;
+    }
 
-public:
-
-    static constexpr auto types = hana::tuple_t<Parsers...>;
-
-    template <class ...Ts>
-    constexpr alternative(Ts &&...ts) : parsers(std::forward<Ts>(ts)...) {}
-
-    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
-    optional_variant<Check<Parsers, Window>...> operator()(Tag tag, Window &w) const {
-        optional_variant<Check<Parsers, Window>...> ret;
-        hana::for_each(enumerate(parsers), [&](auto const &p) {
-             if (ret) return;
-             auto t = check(tag, p[1_c], w);
-             if (valid(p[1_c], t)) ret.emplace(p[0_c], std::move(t));
+    template <class R, class Tag, class Window>
+    R do_check(Tag tag, Window &w) const {
+        R ret;
+        hana::for_each(indices_c<sizeof...(Parsers)>, [&](auto i) {
+            if (ret) return;
+            auto t = check(tag, m_parsers[i], w);
+            if (valid(m_parsers[i], t)) ret.emplace(i, std::move(t));
         });
         return ret;
     }
 
-    template <class Data, class ...Args>
-    static auto parse_type() {
-        auto ts = hana::transform(indices_c<sizeof...(Parsers)>, [](auto i){return hana::type_c<Parse<decltype(i), Data, Args...>>;});
-        return variant_c(ts);
+    template <bool B, class Tag, class Data, class ...Args, int_if<!B> = 0>
+    auto parse_type(Tag tag, Data data, Args &&...args) const {
+        return variant_c<false>(hana::transform(indices_c<sizeof...(Parsers)>, 
+            [&](auto i) {return type_of(parse(tag, parsers()[i], std::move(data[i]), std::forward<Args>(args)...));}));
+    }
+    template <bool B, class Tag, class Data, class ...Args, int_if<B> = 0>
+    auto parse_type(Tag tag, Data data, Args &&...) const {
+        return variant_c<true>(hana::transform(indices_c<sizeof...(Parsers)>, 
+            [&](auto i) {return alternative_base::parse_(type_of(parsers()[i]), type_of(data[i]), hana::type_c<Args>...);}));
+    }
+    template <class R, class Tag, class Data, class ...Args>
+    R do_parse(Tag tag, Data data, Args &&...args) const {
+        return data.visit([&](auto i, auto &d) {return R(i, parse(tag, m_parsers[i], std::move(d), std::forward<Args>(args)...));});
     }
 
-    template <class Tag, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
-    decltype(*parse_type<Data, Args...>()) operator()(Tag tag, Data &&data, Args &&...args) const {
-        //auto const f = [&](auto i) {return hana::decltype_(parse(parsers[i], std::move(data[i].value), std::forward<Args>(args)...));};
-        //using R = decltype(*variant_c(hana::transform(indices_c<sizeof...(Parsers)>, f)));
+public:
 
-        return data.visit([&](auto i, auto &d) -> decltype(*parse_type<Data, Args...>()) {
-            return parse(tag, parsers[i], std::move(d.value), std::forward<Args>(args)...);
-        });
+    auto const & parsers() const {return m_parsers;}
+
+    template <class ...Ts>
+    constexpr alternative(Ts &&...ts) : m_parsers(std::forward<Ts>(ts)...) {}
+
+    template <class Tag, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag const tag, Window &w) const {
+        constexpr auto id = hana::type_c<ID<Window>>;
+        auto cycle = (tag.count(id) >= 0_c);
+        auto tag2 = hana::if_(cycle, tag.zero(id), tag.plus(id));
+        using R = decltype(*check_type<cycle>(tag2, w));
+        return do_check<R>(tag2, w);
+    }
+
+    template <class Tag, class ...Args, int_if<is_parse<Tag>> = 0>
+    auto operator()(Tag const tag, Args &&...args) const {
+        constexpr auto id = hana::type_c<ID<Args...>>;
+        auto cycle = (tag.count(id) >= 0_c);
+        auto tag2 = hana::if_(cycle, tag.zero(id), tag.plus(id));
+        using R = decltype(*parse_type<cycle>(tag2, std::forward<Args>(args)...));
+        return do_parse<R>(tag2, std::forward<Args>(args)...);
     }
 };
 
@@ -103,13 +148,13 @@ template <class L, class R, int_if<(is_expression<L> || is_expression<R>) && !(i
 constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::make_tuple(expr(l), expr(r)));}
 
 template <class L, class R, int_if<is_alternative<L> && !is_alternative<R>> = 0>
-constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::append(l.parsers, expr(r)));}
+constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::append(l.parsers(), expr(r)));}
 
 template <class L, class R, int_if<!is_alternative<L> && is_alternative<R>> = 0>
-constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::prepend(r.parsers, expr(l)));}
+constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::prepend(r.parsers(), expr(l)));}
 
 template <class L, class R, int_if<is_alternative<L> && is_alternative<R>> = 0>
-constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::concat(l.parsers, r.parsers));}
+constexpr auto operator|(L const &l, R const &r) {return make_alternative(hana::concat(l.parsers(), r.parsers()));}
 
 /******************************************************************************************/
 

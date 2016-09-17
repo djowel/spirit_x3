@@ -41,7 +41,7 @@ namespace client
         X4_DECLARE(term);       // :: factor
         X4_DECLARE(factor);     // :: expression
 
-        X4_DEFINE(expression) = seq(term, *(('+' >> term) | ('-' >> term)));
+        X4_DEFINE(expression) = term >> *(('+' >> term) | ('-' >> term));
             //% [](auto t, auto v) {
             //    for (auto i : v) {
             //        if (i.index() == 0) t += i[0_c][1_c];
@@ -50,7 +50,7 @@ namespace client
             //    return t;
             //};
 
-        X4_DEFINE(term) = seq(factor, *(('*' >> factor) | ('/' >> factor)));
+        //X4_DEFINE(term) = seq(factor, *(('*' >> factor) | ('/' >> factor)));
         // % [](auto t, auto v) {
         //        for (auto i : v) {
         //            if (i.index() == 0) t *= i[0_c][1_c];
@@ -59,18 +59,18 @@ namespace client
         //        return t;
         //    };
 
-        X4_DEFINE(factor) = x4::uint_x
-                          | ('(' >> expression >> ')') //% at(1_c)
-                          | ('-' >> factor) //% at(1_c)
-                          | ('+' >> factor); //% at(1_c);
+        //X4_DEFINE(factor) = x4::uint_x
+        //                  | ('(' >> expression >> ')') //% at(1_c)
+        //                  | ('-' >> factor) //% at(1_c)
+        //                  | ('+' >> factor); //% at(1_c);
 
         //X4_DEFINE(expression) = term >> *('-' >> term);
 
-        //X4_DEFINE(term) = factor >> *('*' >> factor);
+        X4_DEFINE(term) = factor >> *('*' >> factor);
 
-        //X4_DEFINE(factor) = x4::uint_x
-        //                 // | '(' >> expression >> ')'
-        //                  | ('+' >> factor);
+        X4_DEFINE(factor) = x4::uint_x
+                          | '(' >> expression >> ')'
+                          | ('+' >> factor);
 
         auto calculator = factor;
     }

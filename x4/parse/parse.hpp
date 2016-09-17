@@ -13,8 +13,6 @@ namespace hana = boost::hana;
 
 struct valid_t {};
 
-static constexpr auto check_c = check_map<>();
-static constexpr auto parse_c = parse_map<>();
 static constexpr auto valid_c = valid_t();
 
 /******************************************************************************************/
@@ -41,8 +39,8 @@ auto parse(Tag tag, P const &p, Ts &&...ts) {
 
 template <class T>
 struct implementation<T, void_if<is_parser<T>>> {
-    template <class M, class Parser, class Window>
-    auto operator()(check_map<M> map, Parser const &parser, Window &w) const {return parser(map, w);}
+    template <class Tag, class Parser, class Window, int_if<is_check<Tag>> = 0>
+    auto operator()(Tag tag, Parser const &parser, Window &w) const {return parser(tag, w);}
 
     template <class Parser, class Data>
     auto operator()(valid_t, Parser const &parser, Data const &data) const {
@@ -51,8 +49,8 @@ struct implementation<T, void_if<is_parser<T>>> {
         return hana::overload_linearly(f1, f2)(parser, data);
     }
 
-    template <class M, class Parser, class Data, class ...Args>
-    auto operator()(parse_map<M> map, Parser const &p, Data &&d, Args &&...args) const {return p(map, std::forward<Data>(d), std::forward<Args>(args)...);}
+    template <class Tag, class Parser, class Data, class ...Args, int_if<is_parse<Tag>> = 0>
+    auto operator()(Tag tag, Parser const &p, Data &&d, Args &&...args) const {return p(tag, std::forward<Data>(d), std::forward<Args>(args)...);}
 };
 
 /******************************************************************************************/
@@ -90,9 +88,9 @@ constexpr auto parser(Subject subject, Masks ...masks) {
 
 template <class Subject, class=void>
 struct visit_expression {
-    template <class Data, class Operation, class ...Args>
-    auto operator()(Subject const &s, Operation const &op, Data &&data, Args &&...args) const {
-        auto f = [&](auto &&...ts) {return parse(s, data, std::forward<decltype(ts)>(ts)...);};
+    template <class Tag, class Data, class Operation, class ...Args>
+    auto operator()(Tag tag, Subject const &s, Operation const &op, Data &&data, Args &&...args) const {
+        auto f = [&](auto &&...ts) {return parse(tag, s, data, std::forward<decltype(ts)>(ts)...);};
         return op(f, std::forward<Args>(args)...);
     }
 };
