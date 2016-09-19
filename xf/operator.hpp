@@ -1,0 +1,8 @@
+#include "operator/alternative.hpp"
+#include "operator/kleene.hpp"
+#include "operator/list.hpp"
+#include "operator/optional.hpp"
+#include "operator/plus.hpp"
+#include "operator/restriction.hpp"
+#include "operator/sequence.hpp"
+#include "operator/transform.hpp"

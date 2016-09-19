@@ -1,0 +1,5 @@
+#include "string/char_predicate.hpp"
+#include "string/char_set.hpp"
+#include "string/literal_char.hpp"
+#include "string/literal_string.hpp"
+#include "string/window_predicate.hpp"
