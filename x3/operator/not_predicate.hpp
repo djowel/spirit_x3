@@ -8,7 +8,7 @@
 
 #include <x3/core/parser.hpp>
 
-namespace x4 {
+namespace xf {
 
 template <class Subject>
 struct not_predicate {

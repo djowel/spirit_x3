@@ -1,83 +1,51 @@
-/*=============================================================================
-    Copyright (c) 2001-2014 Joel de Guzman
-    Distributed under the Boost Software License, Version 1.0. (See accompanying
-    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-=============================================================================*/
-///////////////////////////////////////////////////////////////////////////////
-//
-//  Plain calculator example demonstrating the grammar. The parser is a
-//  syntax checker only and does not do any semantic evaluation.
-//
-//  [ JDG May 10, 2002 ]        spirit 1
-//  [ JDG March 4, 2007 ]       spirit 2
-//  [ JDG February 21, 2011 ]   spirit 2.5
-//  [ JDG June 6, 2014 ]        spirit x3
-//
-///////////////////////////////////////////////////////////////////////////////
-
-#include "x4.hpp"
+#include "xf.hpp"
 
 #include <iostream>
 #include <string>
 #include <list>
 #include <numeric>
+#include <boost/hana/functional/arg.hpp>
 
-using namespace x4::literals;
+using namespace xf::literals;
 using namespace boost::hana::literals;
+namespace hana = boost::hana;
 
-namespace client
-{
+namespace client {
 
     ///////////////////////////////////////////////////////////////////////////////
     //  The calculator grammar
     ///////////////////////////////////////////////////////////////////////////////
-    namespace calculator_grammar
-    {
-        template <class I>
-        constexpr auto at(I i) {return boost::hana::reverse_partial(boost::hana::at, i);}
 
+    XF_DECLARE(expression); // :: term
+    XF_DECLARE(term);       // :: factor
+    XF_DECLARE(factor);     // :: expression
 
-        X4_DECLARE(expression); // :: term
-        X4_DECLARE(term);       // :: factor
-        X4_DECLARE(factor);     // :: expression
+    //  ('+' >> term) --> void(int &r)
+    auto plus = seq('+'_x, term)   % xf::partial % [](auto, auto t, auto &r) {r += t;}; // seq : return a sequence of the terms, equivalent to >>
+    auto sub  = seq('-'_x, term)   % xf::partial % [](auto, auto t, auto &r) {r -= t;}; // sequence unpacks its arguments into the % chained function
+    auto mult = seq('*'_x, factor) % xf::partial % [](auto, auto t, auto &r) {r *= t;}; // '*'_x doesn't have suppressed output right now (hence auto, )
+    auto div  = seq('/'_x, factor) % xf::partial % [](auto, auto t, auto &r) {r /= t;}; // partial binds the arguments to the next % chained function (syntax maybe not great)
 
-        X4_DEFINE(expression) = term >> *(('+' >> term) | ('-' >> term));
-            //% [](auto t, auto v) {
-            //    for (auto i : v) {
-            //        if (i.index() == 0) t += i[0_c][1_c];
-            //        else t -= i[1_c][1_c];
-            //    }
-            //    return t;
-            //};
+    // (term >> *(plus | sub)) --> int
+    XF_DEFINE(expression) = seq(term, *any(plus, sub))           // any is equivalent to |, * returns vector by default
+        % [](auto t, auto ops) {for (auto op : ops) op(t); return t;}; // the curried functions can be called with the last argument alone now
 
-        X4_DEFINE(term) = factor >> *(('*' >> factor) | ('/' >> factor));
-        // % [](auto t, auto v) {
-        //        for (auto i : v) {
-        //            if (i.index() == 0) t *= i[0_c][1_c];
-        //            else t /= i[1_c][1_c];
-        //        }
-        //        return t;
-        //    };
+    // (factor >> *(mult | div)) --> int
+    XF_DEFINE(term) = seq(factor, *any(mult, div))
+        % [](auto t, auto ops) {for (auto op : ops) op(t); return t;};
 
-        //X4_DEFINE(factor) = x4::uint_x
-        //                  | ('(' >> expression >> ')') //% at(1_c)
-        //                  | ('-' >> factor) //% at(1_c)
-        //                  | ('+' >> factor); //% at(1_c);
+    // (uint | '(' >> expression >> ')' | '+' >> factor | '-' >> factor) --> int
+    XF_DEFINE(factor) = (xf::uint_x                                              // simple unsigned int
+                      | seq('(', expression, ')') % hana::arg<2>                 // take second argument
+                      | seq('+', factor)          % hana::arg<2>                 // take second argument
+                      | seq('-', factor)          % hana::arg<2> % hana::negate) // take second argument and negate it
+                      % xf::static_cast_c<int>;                                  // my variant has a cast operator
 
-        //X4_DEFINE(expression) = term >> ~('-' >> term);
+    // Recursion is tricky sometimes because accessing incomplete types is disallowed
+    // However here the type information is sufficient with <int>
+    // Also, the example works with <double> too!
 
-        //X4_DEFINE(term) = factor >> ~('*' >> factor);
-
-        X4_DEFINE(factor) = x4::uint_x
-                          | '(' >> expression >> ')'
-                          | ('+' >> factor)
-                          | ('-' >> factor);
-
-        auto calculator = factor;
-    }
-
-    using calculator_grammar::calculator;
-
+    auto calculator = expression;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,11 +67,11 @@ int main() {
         auto& calc = client::calculator;    // Our grammar
         bool r = parser(client::calculator, ' '_x).match(str);
 
-
         if (r) {
-            //auto p = parser(client::calculator, ' '_x)(str);// << std::endl;
+            auto p = parser(client::calculator, ' '_x)(str);
+
             std::cout << "-------------------------\n";
-            std::cout << "Parsing succeeded\n";
+            std::cout << "Parsing succeeded: " << p << "\n";
             std::cout << "-------------------------\n";
         } else {
             std::cout << "-------------------------\n";

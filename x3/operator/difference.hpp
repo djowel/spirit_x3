@@ -10,7 +10,7 @@
 #include <x3/support/traits/has_attribute.hpp>
 #include <x3/core/parser.hpp>
 
-namespace x4 {
+namespace xf {
 
 template <class Left, class Right>
 struct difference_op {

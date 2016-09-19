@@ -14,7 +14,7 @@
 #include <x3/support/traits/optional_traits.hpp>
 #include <x3/support/traits/attribute_category.hpp>
 
-namespace x4 {
+namespace xf {
 
 template <class Subject>
 struct optional_op {
